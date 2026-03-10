@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İş Araçları</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:#050f1a;color:#e0f4ff;min-height:100vh;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 600px 400px at 10% 20%,rgba(0,212,255,.08) 0%,transparent 70%),radial-gradient(ellipse 500px 400px at 90% 80%,rgba(0,255,157,.08) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+/* PIN */
+#pin-screen{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:32px;background:#050f1a;}
+.pin-logo{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(135deg,#00d4ff,#00ff9d,#4d96ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
+.pin-logo small{font-size:12px;font-weight:400;display:block;-webkit-text-fill-color:#5a8fa8;color:#5a8fa8;letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.pin-title{font-size:15px;color:#5a8fa8;}
+.pin-dots{display:flex;gap:16px;margin:4px 0;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #1a3a50;background:transparent;transition:all .2s;}
+.pin-dot.filled{background:#00d4ff;border-color:#00d4ff;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,72px);gap:12px;}
+.pin-btn{width:72px;height:72px;border-radius:50%;background:#0d1f30;border:1px solid #1a3a50;color:#e0f4ff;font-family:'Syne',sans-serif;font-size:22px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.pin-btn:active{background:#1a3a50;transform:scale(.93);}
+.pin-btn.del{font-size:18px;color:#5a8fa8;}
+.pin-btn.empty{background:transparent;border:none;cursor:default;pointer-events:none;}
+.pin-error{color:#ff6b6b;font-size:13px;height:18px;text-align:center;}
+
+/* ANA SAYFA */
+#home-screen{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:32px;}
+.home-logo{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;background:linear-gradient(135deg,#00d4ff,#00ff9d,#4d96ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
+.home-logo small{font-size:12px;font-weight:400;display:block;-webkit-text-fill-color:#5a8fa8;color:#5a8fa8;letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
+.app-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:520px;}
+.app-card{background:#0d1f30;border:1px solid #1a3a50;border-radius:24px;padding:32px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.app-card.fiyat::before{background:linear-gradient(135deg,#00d4ff,#00ff9d,#4d96ff);}
+.app-card.gelir::before{background:linear-gradient(135deg,#00ff9d,#4d96ff);}
+.app-card:active{transform:translateY(-3px);border-color:#00d4ff;box-shadow:0 12px 40px rgba(0,212,255,.2);}
+.app-icon{font-size:52px;line-height:1;}
+.app-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;text-align:center;line-height:1.4;color:#e0f4ff;}
+.app-desc{font-size:11px;color:#5a8fa8;text-align:center;line-height:1.5;}
+.back-btn{position:fixed;top:12px;left:12px;z-index:9999;width:36px;height:36px;border-radius:10px;background:rgba(13,31,48,.95);border:1px solid #1a3a50;color:#e0f4ff;font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);}
+#app-frame{position:fixed;inset:0;width:100%;height:100%;border:none;display:none;}
+</style>
+</head>
+<body>
+
+<!-- PIN EKRANI -->
+<div id="pin-screen">
+  <div class="pin-logo">İş Araçları<small>Profesyonel Takip Sistemi</small></div>
+  <div class="pin-title">PIN girin</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="d0"></div>
+    <div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div>
+    <div class="pin-dot" id="d3"></div>
+    <div class="pin-dot" id="d4"></div>
+    <div class="pin-dot" id="d5"></div>
+  </div>
+  <div class="pin-error" id="pin-error"></div>
+  <div class="pin-pad">
+    <button class="pin-btn" onclick="pinPress('1')">1</button>
+    <button class="pin-btn" onclick="pinPress('2')">2</button>
+    <button class="pin-btn" onclick="pinPress('3')">3</button>
+    <button class="pin-btn" onclick="pinPress('4')">4</button>
+    <button class="pin-btn" onclick="pinPress('5')">5</button>
+    <button class="pin-btn" onclick="pinPress('6')">6</button>
+    <button class="pin-btn" onclick="pinPress('7')">7</button>
+    <button class="pin-btn" onclick="pinPress('8')">8</button>
+    <button class="pin-btn" onclick="pinPress('9')">9</button>
+    <div class="pin-btn empty"></div>
+    <button class="pin-btn" onclick="pinPress('0')">0</button>
+    <button class="pin-btn del" onclick="pinDel()">⌫</button>
+  </div>
+</div>
+
+<button class="back-btn" id="backBtn" onclick="goHome()">←</button>
+
+<!-- ANA SAYFA -->
+<div id="home-screen" style="display:none;">
+  <div class="home-logo">İş Araçları<small>Profesyonel Takip Sistemi</small></div>
+  <div class="app-grid">
+    <div class="app-card fiyat" onclick="openApp('testler-fiyat.html')">
+      <div class="app-icon">🏷️</div>
+      <div class="app-name">Maliyet ve Satış Fiyatı Hesaplama</div>
+      <div class="app-desc">Ürün maliyet & fiyatlandırma</div>
+    </div>
+    <div class="app-card gelir" onclick="openApp('testler-gelir.html')">
+      <div class="app-icon">📊</div>
+      <div class="app-name">Gelir Gider Tablosu</div>
+      <div class="app-desc">Mali tablo & kazanç takibi</div>
+    </div>
+  </div>
+</div>
+
+<iframe id="app-frame"></iframe>
+
+<script>
+const PIN = '404041';
+let pinInput = '';
+
+function pinPress(d) {
+  if(pinInput.length >= 6) return;
+  pinInput += d;
+  document.getElementById('d'+(pinInput.length-1)).classList.add('filled');
+  if(pinInput.length === 6) {
+    setTimeout(() => {
+      if(pinInput === PIN) {
+        document.getElementById('pin-screen').style.display = 'none';
+        document.getElementById('home-screen').style.display = 'flex';
+        sessionStorage.setItem('unlocked','1');
+      } else {
+        document.getElementById('pin-error').textContent = 'Yanlış PIN, tekrar deneyin';
+        pinInput = '';
+        document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('filled'));
+        setTimeout(() => document.getElementById('pin-error').textContent = '', 2000);
+      }
+    }, 150);
+  }
+}
+
+function pinDel() {
+  if(pinInput.length === 0) return;
+  document.getElementById('d'+(pinInput.length-1)).classList.remove('filled');
+  pinInput = pinInput.slice(0,-1);
+  document.getElementById('pin-error').textContent = '';
+}
+
+function openApp(file) {
+  const frame = document.getElementById('app-frame');
+  frame.src = file;
+  frame.style.display = 'block';
+  document.getElementById('home-screen').style.display = 'none';
+  document.getElementById('backBtn').style.display = 'flex';
+}
+
+function goHome() {
+  const frame = document.getElementById('app-frame');
+  frame.src = '';
+  frame.style.display = 'none';
+  document.getElementById('home-screen').style.display = 'flex';
+  document.getElementById('backBtn').style.display = 'none';
+}
+
+if(sessionStorage.getItem('unlocked') === '1') {
+  document.getElementById('pin-screen').style.display = 'none';
+  document.getElementById('home-screen').style.display = 'flex';
+}
+</script>
+</body>
+</html>
