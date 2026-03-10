@@ -1,48 +1,200 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>İş Araçları</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:#050f1a;color:#e0f4ff;min-height:100vh;overflow:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 600px 400px at 10% 20%,rgba(0,212,255,.08) 0%,transparent 70%),radial-gradient(ellipse 500px 400px at 90% 80%,rgba(0,255,157,.08) 0%,transparent 70%);pointer-events:none;z-index:0;}
 
-/* PIN */
-#pin-screen{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:32px;background:#050f1a;}
-.pin-logo{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(135deg,#00d4ff,#00ff9d,#4d96ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
-.pin-logo small{font-size:12px;font-weight:400;display:block;-webkit-text-fill-color:#5a8fa8;color:#5a8fa8;letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
-.pin-title{font-size:15px;color:#5a8fa8;}
-.pin-dots{display:flex;gap:16px;margin:4px 0;}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #1a3a50;background:transparent;transition:all .2s;}
-.pin-dot.filled{background:#00d4ff;border-color:#00d4ff;}
-.pin-pad{display:grid;grid-template-columns:repeat(3,72px);gap:12px;}
-.pin-btn{width:72px;height:72px;border-radius:50%;background:#0d1f30;border:1px solid #1a3a50;color:#e0f4ff;font-family:'Syne',sans-serif;font-size:22px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
-.pin-btn:active{background:#1a3a50;transform:scale(.93);}
-.pin-btn.del{font-size:18px;color:#5a8fa8;}
+:root{
+  --bg:#050f1a;
+  --bg2:#080f18;
+  --surface:#0d1f30;
+  --border:#1a3a50;
+  --text:#e0f4ff;
+  --muted:#5a8fa8;
+  --accent1:#00d4ff;
+  --accent2:#00ff9d;
+  --accent3:#4d96ff;
+}
+[data-theme="light"]{
+  --bg:#f0f7ff;
+  --bg2:#e4f0fb;
+  --surface:#ffffff;
+  --border:#b8d4e8;
+  --text:#0a1f30;
+  --muted:#4a7a9b;
+  --accent1:#0099cc;
+  --accent2:#00aa66;
+  --accent3:#2266cc;
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow:hidden;
+  transition:background .4s, color .4s;
+}
+
+/* ARKAPLAN */
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbFloat 8s ease-in-out infinite;}
+.orb1{width:400px;height:400px;background:radial-gradient(circle,rgba(0,212,255,.12),transparent 70%);top:-100px;left:-100px;animation-delay:0s;}
+.orb2{width:350px;height:350px;background:radial-gradient(circle,rgba(0,255,157,.1),transparent 70%);bottom:-80px;right:-80px;animation-delay:-3s;}
+.orb3{width:250px;height:250px;background:radial-gradient(circle,rgba(77,150,255,.08),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-5s;}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(20px,-20px) scale(1.05);}66%{transform:translate(-15px,15px) scale(.95);}}.orb3{animation:orbFloat3 10s ease-in-out infinite;}
+@keyframes orbFloat3{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.1);}}
+
+/* PIN EKRANI */
+#pin-screen{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:32px;
+  background:var(--bg);
+  transition:opacity .4s, transform .4s;
+}
+#pin-screen.hide{opacity:0;transform:scale(.96);pointer-events:none;}
+
+.pin-logo{
+  font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-align:center;
+  animation:fadeDown .6s ease both;
+}
+.pin-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:5px;}
+
+.pin-title{font-size:14px;color:var(--muted);letter-spacing:1px;animation:fadeDown .6s .1s ease both;}
+
+.pin-dots{display:flex;gap:14px;margin:4px 0;animation:fadeDown .6s .2s ease both;}
+.pin-dot{
+  width:15px;height:15px;border-radius:50%;
+  border:2px solid var(--border);background:transparent;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+}
+.pin-dot.filled{background:var(--accent1);border-color:var(--accent1);transform:scale(1.2);box-shadow:0 0 10px rgba(0,212,255,.5);}
+
+.pin-pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;animation:fadeUp .6s .3s ease both;}
+.pin-btn{
+  width:76px;height:76px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-family:'Syne',sans-serif;font-size:24px;font-weight:700;
+  cursor:pointer;transition:all .15s cubic-bezier(.34,1.56,.64,1);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.pin-btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(0,212,255,.15),transparent 70%);opacity:0;transition:opacity .2s;}
+.pin-btn:active{transform:scale(.88);background:var(--border);}
+.pin-btn:active::after{opacity:1;}
+.pin-btn.del{font-size:20px;color:var(--muted);}
 .pin-btn.empty{background:transparent;border:none;cursor:default;pointer-events:none;}
-.pin-error{color:#ff6b6b;font-size:13px;height:18px;text-align:center;}
+.pin-error{color:#ff6b6b;font-size:13px;height:20px;text-align:center;transition:all .3s;animation:fadeDown .3s ease both;}
 
 /* ANA SAYFA */
-#home-screen{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:32px;}
-.home-logo{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;background:linear-gradient(135deg,#00d4ff,#00ff9d,#4d96ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
-.home-logo small{font-size:12px;font-weight:400;display:block;-webkit-text-fill-color:#5a8fa8;color:#5a8fa8;letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
-.app-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:520px;}
-.app-card{background:#0d1f30;border:1px solid #1a3a50;border-radius:24px;padding:32px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
-.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.app-card.fiyat::before{background:linear-gradient(135deg,#00d4ff,#00ff9d,#4d96ff);}
-.app-card.gelir::before{background:linear-gradient(135deg,#00ff9d,#4d96ff);}
-.app-card:active{transform:translateY(-3px);border-color:#00d4ff;box-shadow:0 12px 40px rgba(0,212,255,.2);}
-.app-icon{font-size:52px;line-height:1;}
-.app-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;text-align:center;line-height:1.4;color:#e0f4ff;}
-.app-desc{font-size:11px;color:#5a8fa8;text-align:center;line-height:1.5;}
-.back-btn{position:fixed;top:12px;left:12px;z-index:9999;width:36px;height:36px;border-radius:10px;background:rgba(13,31,48,.95);border:1px solid #1a3a50;color:#e0f4ff;font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);}
+#home-screen{
+  position:fixed;inset:0;z-index:100;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:32px;
+  opacity:0;transform:scale(.97);
+  transition:opacity .5s, transform .5s;
+  pointer-events:none;
+}
+#home-screen.show{opacity:1;transform:scale(1);pointer-events:all;}
+
+.home-logo{
+  font-family:'Syne',sans-serif;font-size:30px;font-weight:800;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-align:center;
+}
+.home-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:6px;}
+
+.app-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:500px;}
+
+.app-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:34px 18px 28px;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  cursor:pointer;
+  transition:all .3s cubic-bezier(.34,1.2,.64,1);
+  position:relative;overflow:hidden;
+}
+.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:height .3s;}
+.app-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;border-radius:28px;}
+.app-card.fiyat::before{background:linear-gradient(90deg,var(--accent1),var(--accent2));}
+.app-card.fiyat::after{background:linear-gradient(160deg,rgba(0,212,255,.06),rgba(0,255,157,.04));}
+.app-card.gelir::before{background:linear-gradient(90deg,var(--accent2),var(--accent3));}
+.app-card.gelir::after{background:linear-gradient(160deg,rgba(0,255,157,.06),rgba(77,150,255,.04));}
+.app-card:hover{transform:translateY(-6px);border-color:var(--accent1);box-shadow:0 16px 48px rgba(0,212,255,.15);}
+.app-card:hover::before{height:4px;}
+.app-card:hover::after{opacity:1;}
+.app-card:active{transform:translateY(-2px) scale(.98);}
+
+.app-icon{
+  font-size:56px;line-height:1;
+  filter:drop-shadow(0 4px 12px rgba(0,212,255,.2));
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.app-card:hover .app-icon{transform:scale(1.12) rotate(-3deg);}
+
+.app-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;text-align:center;line-height:1.4;color:var(--text);}
+.app-desc{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;}
+
+.app-arrow{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#fff;
+  transform:scale(0);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  margin-top:4px;
+}
+.app-card:hover .app-arrow{transform:scale(1);}
+
+/* TEMA BUTONU */
+.theme-btn{
+  position:fixed;top:14px;right:14px;z-index:300;
+  width:38px;height:38px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;backdrop-filter:blur(10px);
+}
+.theme-btn:hover{border-color:var(--accent1);box-shadow:0 0 12px rgba(0,212,255,.2);}
+
+/* GERİ BUTONU */
+.back-btn{
+  position:fixed;top:14px;left:14px;z-index:9999;
+  width:38px;height:38px;border-radius:12px;
+  background:rgba(13,31,48,.95);border:1px solid var(--border);
+  color:var(--text);font-size:20px;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(10px);transition:all .2s;
+}
+.back-btn:hover{border-color:var(--accent1);}
+
 #app-frame{position:fixed;inset:0;width:100%;height:100%;border:none;display:none;}
+
+/* ANİMASYONLAR */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+.app-card:nth-child(1){animation:fadeUp .5s .1s ease both;}
+.app-card:nth-child(2){animation:fadeUp .5s .2s ease both;}
 </style>
 </head>
 <body>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- TEMA BUTONU -->
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Tema değiştir">🌙</button>
 
 <!-- PIN EKRANI -->
 <div id="pin-screen">
@@ -76,18 +228,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <button class="back-btn" id="backBtn" onclick="goHome()">←</button>
 
 <!-- ANA SAYFA -->
-<div id="home-screen" style="display:none;">
+<div id="home-screen">
   <div class="home-logo">İş Araçları<small>Profesyonel Takip Sistemi</small></div>
   <div class="app-grid">
     <div class="app-card fiyat" onclick="openApp('testler-fiyat.html')">
       <div class="app-icon">🏷️</div>
       <div class="app-name">Maliyet ve Satış Fiyatı Hesaplama</div>
       <div class="app-desc">Ürün maliyet & fiyatlandırma</div>
+      <div class="app-arrow">→</div>
     </div>
     <div class="app-card gelir" onclick="openApp('testler-gelir.html')">
       <div class="app-icon">📊</div>
       <div class="app-name">Gelir Gider Tablosu</div>
       <div class="app-desc">Mali tablo & kazanç takibi</div>
+      <div class="app-arrow">→</div>
     </div>
   </div>
 </div>
@@ -98,6 +252,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 const PIN = '404041';
 let pinInput = '';
 
+// Tema
+const saved = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', saved);
+document.getElementById('themeBtn').textContent = saved === 'dark' ? '🌙' : '☀️';
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '🌙' : '☀️';
+}
+
 function pinPress(d) {
   if(pinInput.length >= 6) return;
   pinInput += d;
@@ -105,8 +272,10 @@ function pinPress(d) {
   if(pinInput.length === 6) {
     setTimeout(() => {
       if(pinInput === PIN) {
-        document.getElementById('pin-screen').style.display = 'none';
-        document.getElementById('home-screen').style.display = 'flex';
+        const ps = document.getElementById('pin-screen');
+        ps.classList.add('hide');
+        setTimeout(() => { ps.style.display='none'; }, 400);
+        document.getElementById('home-screen').classList.add('show');
         sessionStorage.setItem('unlocked','1');
       } else {
         document.getElementById('pin-error').textContent = 'Yanlış PIN, tekrar deneyin';
@@ -129,7 +298,7 @@ function openApp(file) {
   const frame = document.getElementById('app-frame');
   frame.src = file;
   frame.style.display = 'block';
-  document.getElementById('home-screen').style.display = 'none';
+  document.getElementById('home-screen').classList.remove('show');
   document.getElementById('backBtn').style.display = 'flex';
 }
 
@@ -137,13 +306,13 @@ function goHome() {
   const frame = document.getElementById('app-frame');
   frame.src = '';
   frame.style.display = 'none';
-  document.getElementById('home-screen').style.display = 'flex';
+  document.getElementById('home-screen').classList.add('show');
   document.getElementById('backBtn').style.display = 'none';
 }
 
 if(sessionStorage.getItem('unlocked') === '1') {
   document.getElementById('pin-screen').style.display = 'none';
-  document.getElementById('home-screen').style.display = 'flex';
+  document.getElementById('home-screen').classList.add('show');
 }
 </script>
 </body>
