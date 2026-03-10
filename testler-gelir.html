@@ -6,23 +6,10 @@
 <title>MaliTablo — Gelir & Gider Takibi</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-[data-theme="light"]{
-  --bg:#f0f7ff;--bg2:#e4f0fb;--surface:#ffffff;
-  --surface2:#f0f7ff;--border:rgba(0,100,160,.15);--border2:rgba(0,100,160,.25);
-  --text:#0a1f30;--muted:#4a7a9b;
-  --income:#007a44;--income2:#005c33;
-  --expense:#cc2200;--purple:#6600cc;
-  --kdv-red:#cc2200;
-  --grad-income:linear-gradient(135deg,#00aa66,#0099bb);
-  --grad-expense:linear-gradient(135deg,#cc4400,#9900cc);
-  --grad-amber:linear-gradient(135deg,#c47d0e,#8a5500);
-  --grad-gold:linear-gradient(135deg,#cc8800,#996600);
-  --grad-purple:linear-gradient(135deg,#6600cc,#0066cc);
-}
 :root{
-  --bg:     #050f1a;
-  --bg2:    #080f18;
-  --surface:#0d1f30;
+  --bg:     #0a0e1a;
+  --bg2:    #080c16;
+  --surface:#111827;
   --surface2:#0d2535;
   --border: rgba(0,212,255,.07);
   --border2:rgba(0,212,255,.12);
@@ -30,19 +17,18 @@
   --muted:  #5a8fa8;
   --income: #00ff9d;   /* yeşil */
   --income2:#00d4aa;
-  --expense:#ff6b6b;   /* kırmızı */
+  --expense:#f97316;   /* kırmızı */
   --expense2:#e84545;
   --gold:   #ffd93d;
-  --purple: #c77dff;
+  --purple: #a78bfa;
   --blue:   #4cc9f0;
-  --grad-income: linear-gradient(135deg,#3dd68c,#00b4d8);
-  --grad-expense:linear-gradient(135deg,#ff6b6b,#c77dff);
+  --grad-income: linear-gradient(135deg,#34d399,#60a5fa);
+  --grad-expense:linear-gradient(135deg,#f97316,#a78bfa);
   --grad-amber:  linear-gradient(135deg,#e6a817,#c47d0e);
   --kdv-red:     #c0392b;
   --grad-gold:   linear-gradient(135deg,#ffd93d,#ff9f1c);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{transition:background .3s,color .3s;}
 body{
   font-family:'DM Sans',sans-serif;
   background:var(--bg);
@@ -159,9 +145,9 @@ header{
 }
 .btn:hover{border-color:var(--border2);filter:brightness(1.1);}
 .btn-income{background:rgba(61,214,140,.12);color:var(--income);border-color:rgba(61,214,140,.25);}
-.btn-income:hover{background:rgba(61,214,140,.2);}
+.btn-income:hover{background:rgba(52,211,153,.2);transform:translateY(-1px);box-shadow:0 6px 16px rgba(52,211,153,.15);}
 .btn-expense{background:rgba(255,107,107,.12);color:var(--expense);border-color:rgba(255,107,107,.25);}
-.btn-expense:hover{background:rgba(255,107,107,.2);}
+.btn-expense:hover{background:rgba(249,115,22,.2);transform:translateY(-1px);box-shadow:0 6px 16px rgba(249,115,22,.15);}
 .btn-sm{padding:6px 12px;font-size:12px;}
 .btn-del{background:transparent;border:1px solid transparent;color:var(--muted);padding:8px 10px;border-radius:8px;}
 .btn-del:hover{background:rgba(255,107,107,.1);color:var(--expense);border-color:rgba(255,107,107,.2);}
@@ -298,7 +284,7 @@ header{
 
 <header>
   <div class="hdr-top">
-    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;"><div class="logo">Mali<span>Tablo</span> <em>Gelir & Gider Takibi</em></div>
+    <div class="logo">Mali<span>Tablo</span> <em>Gelir & Gider Takibi</em></div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
       <div id="syncBar" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:5px 10px;font-size:11px;color:#7878a0;">
         <span id="syncDot" style="width:7px;height:7px;border-radius:50%;background:#7878a0;flex-shrink:0;transition:background .4s;"></span>
@@ -1028,22 +1014,6 @@ function init(){
   setTimeout(syncYukle, 500);
 }
 init();
-
-// Tema
-(function(){
-  const t = localStorage.getItem('theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', t);
-  const btn = document.getElementById('themeBtnG');
-  if(btn) btn.textContent = t === 'dark' ? '🌙' : '☀️';
-})();
-function toggleTheme(){
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  const btn = document.getElementById('themeBtnG');
-  if(btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
-}
 </script>
 </body>
 </html>
