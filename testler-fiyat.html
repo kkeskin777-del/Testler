@@ -570,59 +570,9 @@ function syncYaz(key, value) {
   syncDurum('bekle', 'Kaydediliyor...');
 }
 
-async function syncGonder() {
-  if(_syncing || Object.keys(_syncQueue).length === 0) return;
-  const kuyruk = {..._syncQueue};
-  _syncQueue = {};
-  _syncing = true;
-  syncDurum('mesgul', 'Senkronize ediliyor...');
-  try {
-    for(const [key, value] of Object.entries(kuyruk)) {
-      const val = typeof value === 'string' ? value : JSON.stringify(value);
-      if(val.length < 1500) {
-        // Küçük veri: GET ile gönder (güvenilir)
-        await fetch(GAS_URL + '?action=set&key=' + encodeURIComponent(key) + '&value=' + encodeURIComponent(val));
-      } else {
-        // Büyük veri: POST ile gönder
-        await fetch(GAS_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {'Content-Type':'text/plain'},
-          body: JSON.stringify({key, value})
-        });
-      }
-    }
-    syncDurum('ok', '✓ Senkronize');
-  } catch(e) {
-    syncDurum('hata', '⚠️ Bağlantı hatası');
-    Object.assign(_syncQueue, kuyruk);
-  }
-  _syncing = false;
-}
+async function syncGonder() { syncDurum("ok","💾 Yerel"); }
 
-async function syncYukle() {
-  syncDurum('mesgul', 'Yükleniyor...');
-  try {
-    const r = await fetch(`${GAS_URL}?action=getall`);
-    const d = await r.json();
-    if(!d.ok || !d.value) { syncDurum('ok', '☁️ Bağlı'); return; }
-    const all = d.value;
-    if(all['fhp_urunler']  != null) { savedProds  = all['fhp_urunler'];  localStorage.setItem('fhp_urunler',  JSON.stringify(savedProds));  }
-    if(all['fhp_sabit']    != null) { sabitList   = all['fhp_sabit'];    localStorage.setItem('fhp_sabit',    JSON.stringify(sabitList));   }
-    if(all['fhp_kargo']    != null) { kargoList   = all['fhp_kargo'];    localStorage.setItem('fhp_kargo',    JSON.stringify(kargoList));   }
-    if(all['fhp_hammadde'] != null) { hammaddeler = all['fhp_hammadde']; localStorage.setItem('fhp_hammadde', JSON.stringify(hammaddeler)); }
-    if(all['fhp_plat']     != null) { platData    = all['fhp_plat'];     localStorage.setItem('fhp_plat',     JSON.stringify(platData));    }
-    if(all['fhp_etsy_kur'] != null) {
-      localStorage.setItem('fhp_etsy_kur', all['fhp_etsy_kur']);
-      const el = document.getElementById('etsy_kur');
-      if(el) el.value = all['fhp_etsy_kur'];
-    }
-    renderSabit(); renderKargo(); renderHammadde(); renderPlatList(); renderSaved(); refreshAhsapSelectors();
-    syncDurum('ok', '☁️ Bağlı');
-  } catch(e) {
-    syncDurum('hata', '⚠️ Çevrimdışı — yerel veri');
-  }
-}
+async function syncYukle() { syncDurum("ok","💾 Yerel"); }
 
 // ════════════ INIT ════════════
 

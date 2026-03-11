@@ -457,54 +457,9 @@ function syncYaz(key, value) {
   syncDurum('bekle', 'Kaydediliyor...');
 }
 
-async function syncGonder() {
-  if(_syncing || Object.keys(_syncQueue).length === 0) return;
-  const kuyruk = {..._syncQueue};
-  _syncQueue = {};
-  _syncing = true;
-  syncDurum('mesgul', 'Senkronize ediliyor...');
-  try {
-    for(const [key, value] of Object.entries(kuyruk)) {
-      const val = typeof value === 'string' ? value : JSON.stringify(value);
-      if(val.length < 1500) {
-        // Küçük veri: GET ile gönder (güvenilir)
-        await fetch(GAS_URL + '?action=set&key=' + encodeURIComponent(key) + '&value=' + encodeURIComponent(val));
-      } else {
-        // Büyük veri: POST ile gönder
-        await fetch(GAS_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {'Content-Type':'text/plain'},
-          body: JSON.stringify({key, value})
-        });
-      }
-    }
-    syncDurum('ok', '☁️ Senkronize');
-  } catch(e) {
-    syncDurum('hata', '⚠️ Bağlantı hatası');
-    Object.assign(_syncQueue, kuyruk);
-  }
-  _syncing = false;
-}
+async function syncGonder() { syncDurum("ok","💾 Yerel"); }
 
-async function syncYukle() {
-  syncDurum('mesgul', 'Yükleniyor...');
-  try {
-    const r = await fetch(`${GAS_URL}?action=getall`);
-    const d = await r.json();
-    if(!d.ok || !d.value) { syncDurum('ok', '☁️ Bağlı'); return; }
-    const all = d.value;
-    if(all['mt_gelir'] != null) { gelirler = all['mt_gelir']; localStorage.setItem('mt_gelir', JSON.stringify(gelirler)); }
-    if(all['mt_gider'] != null) { giderler = all['mt_gider']; localStorage.setItem('mt_gider', JSON.stringify(giderler)); }
-    yillariGuncelle();
-    renderOzet();
-    renderGelirList();
-    renderGiderList();
-    syncDurum('ok', '☁️ Bağlı');
-  } catch(e) {
-    syncDurum('hata', '⚠️ Çevrimdışı — yerel veri');
-  }
-}
+async function syncYukle() { syncDurum("ok","💾 Yerel"); }
 
 function kaydetGelir(){ syncYaz('mt_gelir', gelirler); }
 function kaydetGider(){ syncYaz('mt_gider', giderler); }
