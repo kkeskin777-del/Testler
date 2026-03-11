@@ -83,7 +83,7 @@
   .gr-hdr label{margin-bottom:0;}
 
   /* PLATFORM KARTLARI - artık manuel komisyon girişli */
-  .plat-row{display:grid;grid-template-columns:28px 1fr 90px 80px 80px 34px;gap:8px;margin-bottom:8px;align-items:center;}
+  .plat-row{display:grid;grid-template-columns:28px 1fr 90px 80px 34px;gap:8px;margin-bottom:8px;align-items:center;}
   .plat-row input{margin-bottom:0;}
   .plat-emoji{font-size:18px;text-align:center;}
   .plat-name-cell{display:flex;flex-direction:column;gap:3px;}
@@ -94,10 +94,7 @@
   .plat-kdv-cell{position:relative;}
   .plat-kdv-cell input{padding-right:22px;text-align:right;background:rgba(77,150,255,.06);border-color:rgba(77,150,255,.25);}
   .plat-kdv-cell::after{content:'%';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none;}
-  .plat-kargo-cell{position:relative;}
-  .plat-kargo-cell input{padding-right:22px;text-align:right;background:rgba(251,191,36,.05);border-color:rgba(251,191,36,.2);}
-  .plat-kargo-cell::after{content:'₺';position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none;}
-  .plat-hdr{display:grid;grid-template-columns:28px 1fr 90px 80px 80px 34px;gap:8px;margin-bottom:6px;}
+  .plat-hdr{display:grid;grid-template-columns:28px 1fr 90px 80px 34px;gap:8px;margin-bottom:6px;}
   .plat-hdr label{margin-bottom:0;font-size:10px;}
 
   /* KARGO */
@@ -342,6 +339,10 @@
     <div class="ctitle"><div class="ico iy">💰</div>İşçilik & Diğer Maliyetler</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="fg">
+        <label>🚚 Kargo (₺)</label>
+        <input type="number" id="kargoManuel" placeholder="0.00" min="0" step="0.01" oninput="hesapla()">
+      </div>
+      <div class="fg">
         <label>🔨 İşçilik / Emek (₺)</label>
         <input type="number" id="iscilik" placeholder="0.00" min="0" step="0.01">
       </div>
@@ -395,7 +396,6 @@
       <label>Platform Adı</label>
       <label>Komisyon %</label>
       <label>KDV %</label>
-      <label>Kargo ₺</label>
       <span></span>
     </div>
     <div id="platList"></div>
@@ -690,10 +690,10 @@ function renderPlatList(){
   container.innerHTML = '';
   cnt.plat = 0;
   const data = platData || BASLANGIC_PLAT;
-  data.forEach(p => addPlat(p.emoji, p.name, p.komisyon, p.kdv !== undefined ? p.kdv : 20, p.kargo||'0'));
+  data.forEach(p => addPlat(p.emoji, p.name, p.komisyon, p.kdv !== undefined ? p.kdv : 20));
 }
 
-function addPlat(emoji='🛒', name='', komisyon='', kdv='20', kargo='0'){
+function addPlat(emoji='🛒', name='', komisyon='', kdv='20'){
   cnt.plat++;
   const id = 'plat_'+cnt.plat;
   const div = document.createElement('div');
@@ -706,9 +706,6 @@ function addPlat(emoji='🛒', name='', komisyon='', kdv='20', kargo='0'){
     </div>
     <div class="plat-kdv-cell">
       <input type="number" placeholder="20" min="0" max="100" step="1" value="${kdv}" oninput="savePlatData()">
-    </div>
-    <div class="plat-kargo-cell">
-      <input type="number" placeholder="0" min="0" step="0.01" value="${kargo}" oninput="savePlatData()">
     </div>
     <button class="bico" onclick="removeRow('${id}'); savePlatData()">×</button>
   `;
@@ -723,8 +720,7 @@ function savePlatData(){
       emoji: row.querySelector('.plat-emoji').textContent,
       name: inputs[0].value,
       komisyon: inputs[1].value,
-      kdv: inputs[2].value,
-      kargo: inputs[3].value
+      kdv: inputs[2].value
     });
   });
   const kurEl = document.getElementById('etsy_kur');
@@ -747,7 +743,7 @@ function getPlatforms(){
       result.push({
         emoji: row.querySelector('.plat-emoji').textContent,
         name, komisyon: kom, kdvOrani,
-        kargo: parseFloat(inputs[3].value)||0,
+        kargo: parseFloat(document.getElementById('kargoManuel').value)||0,
         isEtsy, etsy_kur
       });
     }
@@ -897,7 +893,7 @@ function recalcSavedProds(){
     u.platforms = platlar.filter(p=>p.name).map(p=>{
       const koR = (parseFloat(p.komisyon)||0)/100;
       const kdvOrani = (parseFloat(p.kdv)||0)/100;
-      const kg = parseFloat(p.kargo)||0;
+      const kg = parseFloat(document.getElementById('kargoManuel').value)||0;
       if(koR >= 1) return {name:p.name, fiyat:0, net:0};
       const payda = kdvOrani>0 ? (1-koR-kdvOrani/(1+kdvOrani)) : (1-koR);
       const sf    = (hamMal+kg+netKar)/payda;
@@ -980,17 +976,27 @@ function addAhsap(){
 function ahsapHammaddeSecildi(id){
   const row = document.getElementById(id); if(!row) return;
   const sel = row.querySelector('select');
-  const cm3inp = row.querySelectorAll('input')[4]; // 5. input = cm³ fiyatı
+  const inp = row.querySelectorAll('input');
+  const kalinlikInp = inp[3]; // 4. input = kalınlık
+  const cm3inp      = inp[4]; // 5. input = cm³ fiyatı
   if(sel.value === ''){
     cm3inp.value = '';
     cm3inp.style.borderColor = '';
     cm3inp.placeholder = 'cm³ fiyatı';
+    kalinlikInp.style.borderColor = '';
   } else {
     const h = hammaddeler[parseInt(sel.value)];
-    if(h && h.cm3f>0){
-      cm3inp.value = h.cm3f.toFixed(6);
-      cm3inp.style.borderColor = 'rgba(107,203,119,.5)';
-      cm3inp.placeholder = '';
+    if(h){
+      if(h.kal && parseFloat(h.kal) > 0){
+        kalinlikInp.value = parseFloat(h.kal);
+        kalinlikInp.style.borderColor = 'rgba(251,191,36,.5)';
+        kalinlikInp.title = 'Hammaddeden otomatik alındı';
+      }
+      if(h.cm3f > 0){
+        cm3inp.value = h.cm3f.toFixed(6);
+        cm3inp.style.borderColor = 'rgba(107,203,119,.5)';
+        cm3inp.placeholder = '';
+      }
     }
   }
   calcAhsapRow(id);
@@ -1847,7 +1853,7 @@ function duzenleUrun(idx){
     // 6. Platformları doldur
     if(snap.platlar && snap.platlar.length){
       document.getElementById('platList').innerHTML = ''; cnt.plat = 0;
-      snap.platlar.forEach(p => addPlat(p.emoji||'🛒', p.name, p.komisyon, p.kdv||'20', p.kargo||'0'));
+      snap.platlar.forEach(p => addPlat(p.emoji||'🛒', p.name, p.komisyon, p.kdv||'20'));
       savePlatData();
     }
   } else {
