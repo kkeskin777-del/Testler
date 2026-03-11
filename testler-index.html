@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr" data-theme="dark">
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -144,16 +144,7 @@ body{
 }
 .app-card:hover .app-arrow{transform:scale(1);}
 
-/* TEMA BUTONU */
-.theme-btn{
-  position:fixed;top:14px;right:14px;z-index:300;
-  width:38px;height:38px;border-radius:12px;
-  background:var(--surface);border:1px solid var(--border);
-  color:var(--text);font-size:18px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .3s;backdrop-filter:blur(10px);
-}
-.theme-btn:hover{border-color:var(--accent1);box-shadow:0 0 12px rgba(251,191,36,.2);}
+
 
 /* GERİ BUTONU */
 .back-btn{
@@ -183,8 +174,6 @@ body{
   <div class="orb orb3"></div>
 </div>
 
-<!-- TEMA BUTONU -->
-<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Tema değiştir">🌙</button>
 
 <!-- PIN EKRANI -->
 <div id="pin-screen">
@@ -241,19 +230,6 @@ body{
 <script>
 const PIN = '404041';
 let pinInput = '';
-
-// Tema
-const saved = localStorage.getItem('theme') || 'dark';
-document.documentElement.setAttribute('data-theme', saved);
-document.getElementById('themeBtn').textContent = saved === 'dark' ? '🌙' : '☀️';
-
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  document.getElementById('themeBtn').textContent = next === 'dark' ? '🌙' : '☀️';
-}
 
 function pinPress(d) {
   if(pinInput.length >= 6) return;
