@@ -268,7 +268,6 @@
     <div class="tab-nav">
       <button class="tb active" onclick="sw('hesapla',this)">🧮 Hesapla</button>
       <button class="tb"        onclick="sw('hammadde',this)">🪵 Hammadde</button>
-      <button class="tb"        onclick="sw('kargo',this)">🚚 Kargo</button>
       <button class="tb"        onclick="sw('sabit',this)">⚙️ Genel Giderler</button>
       <button class="tb"        onclick="sw('urunler',this)">📦 Ürünlerim</button>
     </div>
@@ -340,6 +339,10 @@
     <div class="ctitle"><div class="ico iy">💰</div>İşçilik & Diğer Maliyetler</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="fg">
+        <label>🚚 Kargo (₺)</label>
+        <input type="number" id="kargoManuel" placeholder="0.00" min="0" step="0.01" oninput="hesapla()">
+      </div>
+      <div class="fg">
         <label>🔨 İşçilik / Emek (₺)</label>
         <input type="number" id="iscilik" placeholder="0.00" min="0" step="0.01">
       </div>
@@ -381,7 +384,7 @@
     <div class="ctitle"><div class="ico ib">🛒</div>Satış Platformları</div>
     <div class="ibar">
       💡 Komisyon ve KDV oranları <strong>kategoriye göre değişir</strong> — kendi ürün kategorinize ait oranları girin.<br>
-      Etsy için USD dönüşüm yapılır. Kargo bedelleri için <strong>🚚 Kargo</strong> sekmesini kullanın.
+      Etsy için USD dönüşüm yapılır. Kargo bedelini <strong>💰 İşçilik & Diğer Maliyetler</strong> bölümüne girin.
     </div>
     <div class="kur-row">
       <label>🌿 Etsy – USD/TL Kuru</label>
@@ -445,18 +448,6 @@
       <span class="wl">Kayıtlı hammadde sayısı</span>
       <span class="wv" id="hmCount">0 adet</span>
     </div>
-  </div>
-</div>
-
-<!-- ═══════════ KARGO ═══════════ -->
-<div id="tab-kargo" class="tab">
-  <div class="card">
-    <div class="ctitle"><div class="ico io">✏️</div>Platform Bazlı Kargo Bedelleri</div>
-    <div class="ibar">Her platform / kanal için kargo bedelinizi girin. Hesapla sekmesinde otomatik uygulanır.</div>
-    <div class="gr-hdr"><label>Platform / Kanal</label><label>Kargo Bedeli (₺)</label><span></span></div>
-    <div id="kargoList"></div>
-    <button class="btn badd" onclick="addKargoRow()">➕ Satır Ekle</button>
-    <div style="margin-top:12px;"><button class="btn bsave" onclick="saveKargo()">💾 Kaydet</button></div>
   </div>
 </div>
 
@@ -533,12 +524,11 @@ const BASLANGIC_PLAT = [
 
 let savedProds  = JSON.parse(localStorage.getItem('fhp_urunler')  || '[]');
 let sabitList   = JSON.parse(localStorage.getItem('fhp_sabit')    || '[]');
-let kargoList   = JSON.parse(localStorage.getItem('fhp_kargo')    || '[]');
 let hammaddeler = JSON.parse(localStorage.getItem('fhp_hammadde') || '[]');
 let platData    = JSON.parse(localStorage.getItem('fhp_plat')     || 'null');
 let lastResult  = null;
 let editingIdx  = null;
-let cnt = {ah:0, dis:0, sabit:0, kargo:0, hm:0, plat:0};
+let cnt = {ah:0, dis:0, sabit:0, hm:0, plat:0};
 
 // ════════════ GOOGLE SHEETS SYNC ════════════
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwoljMq2NJUv8EWRUHil_BvnTceNOsXlLM9Mih8_jFREQRe_71U5MSyaa8a7jXMvOXw/exec';
@@ -623,7 +613,6 @@ function init(){
   addAhsap();
   addDis();
   renderSabit();
-  renderKargo();
   renderHammadde();
   renderPlatList();
   renderSaved();
@@ -692,7 +681,6 @@ function sw(tab, btn){
     if(checkPendingUpdates()) showUpdateBanner();
   }
   if(tab==='sabit')     { renderSabit(); calcSabitPay(); }
-  if(tab==='kargo')     renderKargo();
   if(tab==='hammadde')  renderHammadde();
 }
 
@@ -738,7 +726,6 @@ function savePlatData(){
   const kurEl = document.getElementById('etsy_kur');
   if(kurEl) syncYaz('fhp_etsy_kur', kurEl.value);
   syncYaz('fhp_plat', platData);
-  syncKargoWithPlat();
 }
 
 function getPlatforms(){
@@ -756,7 +743,7 @@ function getPlatforms(){
       result.push({
         emoji: row.querySelector('.plat-emoji').textContent,
         name, komisyon: kom, kdvOrani,
-        kargo: getKargo(name),
+        kargo: parseFloat(document.getElementById('kargoManuel').value)||0,
         isEtsy, etsy_kur
       });
     }
@@ -906,7 +893,7 @@ function recalcSavedProds(){
     u.platforms = platlar.filter(p=>p.name).map(p=>{
       const koR = (parseFloat(p.komisyon)||0)/100;
       const kdvOrani = (parseFloat(p.kdv)||0)/100;
-      const kg = getKargo(p.name);
+      const kg = parseFloat(document.getElementById('kargoManuel').value)||0;
       if(koR >= 1) return {name:p.name, fiyat:0, net:0};
       const payda = kdvOrani>0 ? (1-koR-kdvOrani/(1+kdvOrani)) : (1-koR);
       const sf    = (hamMal+kg+netKar)/payda;
@@ -1123,44 +1110,6 @@ function showToast(msg){
   t._to = setTimeout(()=>{ t.style.opacity='0'; }, 3000);
 }
 
-// ════════════ KARGO ════════════
-function syncKargoWithPlat(){
-  // Platforma yeni isim eklenince kargo listesini senkronize et (mevcut kayıtları bozmaz)
-}
-function renderKargo(){
-  document.getElementById('kargoList').innerHTML=''; cnt.kargo=0;
-  // Kayıtlı kargo satırları
-  if(kargoList.length>0){
-    kargoList.forEach(k=>addKargoRow(k.platform, k.bedel));
-  } else {
-    // İlk açılışta platform isimlerinden oluştur
-    const data = platData || BASLANGIC_PLAT;
-    data.forEach(p=>{ if(p.name) addKargoRow(p.name,''); });
-  }
-}
-function addKargoRow(platform='', bedel=''){
-  cnt.kargo++;
-  const id='kargo_'+cnt.kargo;
-  const div=document.createElement('div'); div.className='gr'; div.id=id;
-  div.innerHTML=`
-    <input type="text" placeholder="Platform adı" value="${platform}" oninput="saveKargoAuto()">
-    <input type="number" placeholder="0.00" min="0" step="0.01" value="${bedel}" oninput="saveKargoAuto()">
-    <button class="bico" onclick="removeRow('${id}');saveKargoAuto()">×</button>`;
-  document.getElementById('kargoList').appendChild(div);
-}
-function saveKargoAuto(){
-  kargoList=[];
-  document.querySelectorAll('#kargoList .gr').forEach(r=>{
-    const inp=r.querySelectorAll('input');
-    if(inp[0].value.trim()) kargoList.push({platform:inp[0].value.trim(), bedel:inp[1].value});
-  });
-  syncYaz('fhp_kargo', kargoList);
-}
-function saveKargo(){saveKargoAuto();alert('✅ Kargo bedelleri kaydedildi!');}
-function getKargo(name){
-  const f=kargoList.find(k=>k.platform===name);
-  return f?(parseFloat(f.bedel)||0):0;
-}
 
 // ════════════ YARDIMCI ════════════
 function removeRow(id){const el=document.getElementById(id);if(el)el.remove();}
