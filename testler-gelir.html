@@ -566,7 +566,7 @@ function gelirSil(id){
 }
 
 function renderGelirList(){
-  const liste = filtrele(gelirler).sort((a,b)=>b.tarih.localeCompare(a.tarih));
+  const liste = filtrele(gelirler).sort((a,b)=>b.tarih.localeCompare(a.tarih)||b.id-a.id);
   const el = document.getElementById('gelirList');
   document.getElementById('gelirCount').textContent = liste.length ? `(${liste.length} kayıt)` : '';
   if(!liste.length){
@@ -618,7 +618,7 @@ function giderSil(id){
 }
 
 function renderGiderList(){
-  const liste = filtrele(giderler).sort((a,b)=>b.tarih.localeCompare(a.tarih));
+  const liste = filtrele(giderler).sort((a,b)=>b.tarih.localeCompare(a.tarih)||b.id-a.id);
   const el = document.getElementById('giderList');
   document.getElementById('giderCount').textContent = liste.length ? `(${liste.length} kayıt)` : '';
   if(!liste.length){
