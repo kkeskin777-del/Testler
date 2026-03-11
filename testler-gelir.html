@@ -17,6 +17,9 @@
   --muted:  #6a9ab8;
   --green:  #86efac;
   --red:    #fca5a5;
+  --income: #4ade80;
+  --kdv-red:#f87171;
+  --kdv-green:#4ade80;
   --purple: #fbbf24;
   --blue:   #fcd34d;
   --grad:linear-gradient(135deg,#ca8a04,#d97706,#92400e);
@@ -42,6 +45,7 @@ header{
   position:sticky;top:0;z-index:100;
 }
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
+.hdr-top .logo{position:static;transform:none;}
 .logo{font-family:'Libre Baskerville',serif;font-weight:800;font-size:22px;letter-spacing:-.5px;}
 .logo span{background:var(--grad-income);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .logo em{font-style:normal;color:var(--muted);font-weight:400;font-size:13px;margin-left:8px;}
@@ -63,7 +67,7 @@ header{
 .filter-bar .btn-reset:hover{color:var(--text);border-color:var(--border2);}
 
 /* sekmeler */
-.tabs{display:flex;gap:4px;margin-top:12px;}
+.tabs{display:flex;gap:4px;margin-top:12px;justify-content:center;}
 .tb{
   padding:10px 20px;border-radius:10px 10px 0 0;
   font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;
@@ -79,6 +83,7 @@ header{
 
 .tab{display:none;}
 .tab.active{display:block;}
+#ozet-period-title{text-align:center;justify-content:center;width:100%;}
 
 /* ── ÖZET KARTLARI ── */
 .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px;}
@@ -96,15 +101,15 @@ header{
 .scard-val{font-family:'Nunito',sans-serif;font-weight:800;font-size:24px;line-height:1;}
 .scard.income .scard-val{background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .scard.expense .scard-val{background:var(--grad-amber);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.scard.net.positive .scard-val{background:var(--grad-income);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.scard.net.negative .scard-val{color:var(--expense);}
+.scard.net.positive .scard-val{color:#4ade80 !important;-webkit-text-fill-color:#4ade80 !important;}
+.scard.net.negative .scard-val{color:#f87171 !important;-webkit-text-fill-color:#f87171 !important;}
 .scard.kdv .scard-val{color:var(--blue);}
 .scard-sub{font-size:11px;color:var(--muted);margin-top:6px;}
 
 /* ── DÖNEM BAŞLIĞI ── */
 .period-title{
   font-family:'Libre Baskerville',serif;font-weight:700;font-size:18px;
-  margin-bottom:18px;display:flex;align-items:center;gap:10px;
+  margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;width:100%;
 }
 .period-badge{
   font-size:12px;font-weight:600;color:var(--purple);
@@ -172,7 +177,8 @@ header{
 .entry-val.red{color:var(--expense);}
 .entry-val.muted{color:var(--muted);font-weight:500;font-size:13px;}
 .entry-date{font-size:11px;color:var(--muted);}
-.kdv-red-badge{background:rgba(192,57,43,.15);color:var(--kdv-red);border:1px solid rgba(192,57,43,.35);border-radius:5px;font-size:10px;font-weight:700;padding:2px 7px;display:inline-block;}
+.kdv-red-badge{background:rgba(248,113,113,.15);color:var(--kdv-red);border:1px solid rgba(248,113,113,.35);border-radius:5px;font-size:10px;font-weight:700;padding:2px 7px;display:inline-block;}
+.kdv-green-badge{background:rgba(74,222,128,.15);color:var(--kdv-green);border:1px solid rgba(74,222,128,.35);border-radius:5px;font-size:10px;font-weight:700;padding:2px 7px;display:inline-block;}
   .badge-kdv{
   display:inline-block;background:rgba(76,201,240,.1);color:var(--blue);
   border:1px solid rgba(76,201,240,.2);border-radius:5px;
@@ -281,8 +287,9 @@ header{
 
 <header>
   <div class="hdr-top">
+    <div style="flex:1;"></div>
     <div class="logo">Mali<span>Tablo</span> <em>Gelir & Gider Takibi</em></div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <div style="flex:1;display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap;">
       <div id="syncBar" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:5px 10px;font-size:11px;color:#7878a0;">
         <span id="syncDot" style="width:7px;height:7px;border-radius:50%;background:#7878a0;flex-shrink:0;transition:background .4s;"></span>
         <span id="syncLbl">Yükleniyor...</span>
@@ -316,7 +323,7 @@ header{
 
 <!-- ══════════════ ÖZET ══════════════ -->
 <div id="tab-ozet" class="tab active">
-  <div id="ozet-period-title" class="period-title" style="display:none;"></div>
+  <div id="ozet-period-title" class="period-title" style="display:none;width:100%;text-align:center;justify-content:center;align-items:center;margin-left:auto;margin-right:auto;"></div>
   <div class="summary-grid" id="summaryCards"></div>
   <div id="ozet-icerik"></div>
 </div>
@@ -667,7 +674,11 @@ function renderOzet(){
     else if(f.yil)    label = `${f.yil} Yılı`;
     else if(f.ay)     label = `${AYLAR[f.ay]} (Tüm Yıllar)`;
     ptEl.style.display='flex';
-    ptEl.innerHTML = `Mali Tablo <span class="period-badge">📅 ${label}</span>`;
+    ptEl.style.justifyContent='center';
+    ptEl.style.alignItems='center';
+    ptEl.style.textAlign='center';
+    ptEl.style.width='100%';
+    ptEl.innerHTML = `<span style="display:flex;align-items:center;gap:10px;justify-content:center;width:100%;text-align:center;">Mali Tablo <span class="period-badge">📅 ${label}</span></span>`;
   } else {
     ptEl.style.display='none';
   }
@@ -692,8 +703,8 @@ function renderOzet(){
     </div>
     <div class="scard kdv ${oz.kdvOdenmesi>0?'kdv-odeme':''}">
       <div class="scard-lbl">KDV Durumu</div>
-      <div class="scard-val" style="${oz.kdvOdenmesi>0?'color:var(--kdv-red)':''}">${oz.kdvOdenmesi>0?'−':oz.kdvOdenmesi<0?'+':''}${fmt(Math.abs(oz.kdvOdenmesi))} ₺</div>
-      <div class="scard-sub">${oz.kdvOdenmesi>0?'Ödenecek KDV':oz.kdvOdenmesi<0?'İade Alınacak KDV':'KDV Dengede'}</div>
+      <div class="scard-val" style="${oz.kdvOdenmesi>0?'color:var(--kdv-red)':oz.kdvOdenmesi<0?'color:var(--kdv-green)':''}">${oz.kdvOdenmesi>0?'−':oz.kdvOdenmesi<0?'+':''}${fmt(Math.abs(oz.kdvOdenmesi))} ₺</div>
+      <div class="scard-sub" style="${oz.kdvOdenmesi>0?'color:var(--kdv-red)':oz.kdvOdenmesi<0?'color:var(--kdv-green)':''}">${oz.kdvOdenmesi>0?'🔴 Ödenecek KDV':oz.kdvOdenmesi<0?'🟢 İade Alınacak KDV':'⚪ KDV Dengede'}</div>
     </div>`;
 
   // İçerik: aylık grafik (filtre yoksa) veya tablo
@@ -714,7 +725,7 @@ function renderKdvOzet(oz){
       <div class="kdv-row"><span>Tahsil Edilen KDV (Satışlar)</span><span style="color:var(--income)">+ ${fmt(oz.topGelirKdv)} ₺</span></div>
       <div class="kdv-row"><span>Ödenen KDV (Alımlar)</span><span style="color:var(--expense)">− ${fmt(oz.topGiderKdv)} ₺</span></div>
       <div class="kdv-row"><span>${oz.kdvOdenmesi>=0?'Devlete Ödenecek KDV':'İade Alınacak KDV'}</span>
-        <span style="color:${oz.kdvOdenmesi>0?'var(--kdv-red)':'var(--income)'}">${oz.kdvOdenmesi>0?'−':oz.kdvOdenmesi<0?'+':''}${fmt(Math.abs(oz.kdvOdenmesi))} ₺</span></div>
+        <span style="color:${oz.kdvOdenmesi>0?'var(--kdv-red)':oz.kdvOdenmesi<0?'var(--kdv-green)':'var(--income)}'}">${oz.kdvOdenmesi>0?'−':oz.kdvOdenmesi<0?'+':''}${fmt(Math.abs(oz.kdvOdenmesi))} ₺</span></div>
     </div>
   </div>`;
 }
@@ -862,7 +873,7 @@ function renderArsiv(){
       yTopGider+=oz.topGiderDahil;
       yTopKdv  +=oz.kdvOdenmesi;
       const netClass = oz.netGercek>=0?'pos':'neg';
-      const kdvClass = oz.kdvOdenmesi>0?'kdv-red-badge':'pos';
+      const kdvClass = oz.kdvOdenmesi>0?'kdv-red-badge':oz.kdvOdenmesi<0?'kdv-green-badge':'pos';
       html+=`<tr class="clickable" onclick="arsivAyGit(${yil},${ay})">
         <td><span class="mn">${AYLAR[ay]}</span></td>
         <td><span class="pos">${fmt(oz.topGelirHariç)} ₺</span></td>
