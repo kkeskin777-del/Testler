@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>İş Araçları</title>
+<title>Keskeen Design</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -59,17 +59,40 @@ body{
 #pin-screen.hide{opacity:0;transform:scale(.96);pointer-events:none;}
 
 .pin-logo{
-  font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  font-family:'Syne',sans-serif;font-size:32px;font-weight:800;
   background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   text-align:center;
-  animation:fadeDown .6s ease both;
+  animation:logoReveal 4s ease-out both;
+  letter-spacing:2px;
 }
-.pin-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:5px;}
+.pin-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:6px;animation:fadeDown .6s 3.6s ease both;opacity:0;animation-fill-mode:both;}
+@keyframes logoReveal{
+  0%{opacity:0;filter:blur(16px);letter-spacing:8px;}
+  50%{opacity:.6;filter:blur(4px);letter-spacing:4px;}
+  100%{opacity:1;filter:blur(0);letter-spacing:2px;}
+}
+@keyframes homeLogoReveal{
+  0%{opacity:0;filter:blur(16px);letter-spacing:8px;}
+  50%{opacity:.6;filter:blur(4px);letter-spacing:4px;}
+  100%{opacity:1;filter:blur(0);letter-spacing:2px;}
+}
+@keyframes slideFromLeft{
+  0%{opacity:0;transform:translateX(-120px) scale(.95);}
+  60%{opacity:.8;transform:translateX(8px) scale(1.01);}
+  80%{transform:translateX(-4px);}
+  100%{opacity:1;transform:translateX(0) scale(1);}
+}
+@keyframes slideFromRight{
+  0%{opacity:0;transform:translateX(120px) scale(.95);}
+  60%{opacity:.8;transform:translateX(-8px) scale(1.01);}
+  80%{transform:translateX(4px);}
+  100%{opacity:1;transform:translateX(0) scale(1);}
+}
 
-.pin-title{font-size:14px;color:var(--muted);letter-spacing:1px;animation:fadeDown .6s .1s ease both;}
+.pin-title{font-size:14px;color:var(--muted);letter-spacing:1px;animation:fadeDown .5s 3.7s ease both;opacity:0;animation-fill-mode:both;}
 
-.pin-dots{display:flex;gap:14px;margin:4px 0;animation:fadeDown .6s .2s ease both;}
+.pin-dots{display:flex;gap:14px;margin:4px 0;animation:fadeDown .5s 3.8s ease both;opacity:0;animation-fill-mode:both;}
 .pin-dot{
   width:15px;height:15px;border-radius:50%;
   border:2px solid var(--border);background:transparent;
@@ -77,7 +100,7 @@ body{
 }
 .pin-dot.filled{background:var(--accent1);border-color:var(--accent1);transform:scale(1.2);box-shadow:0 0 10px rgba(0,212,255,.5);}
 
-.pin-pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;animation:fadeUp .6s .3s ease both;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;animation:fadeUp .6s 3.9s ease both;opacity:0;animation-fill-mode:both;}
 .pin-btn{
   width:76px;height:76px;border-radius:50%;
   background:var(--surface);border:1px solid var(--border);
@@ -108,8 +131,11 @@ body{
   background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   text-align:center;
+  letter-spacing:2px;
 }
-.home-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:6px;}
+.home-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:6px;}
+#home-screen.show .home-logo{animation:homeLogoReveal 4s ease-out both;}
+#home-screen.show .home-logo small{animation:fadeDown .6s 3.6s ease both;opacity:0;animation-fill-mode:both;}
 
 .app-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:500px;}
 
@@ -182,8 +208,10 @@ body{
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
-.app-card:nth-child(1){animation:fadeUp .5s .1s ease both;}
-.app-card:nth-child(2){animation:fadeUp .5s .2s ease both;}
+.app-card:nth-child(1){opacity:0;}
+.app-card:nth-child(2){opacity:0;}
+#home-screen.show .app-card:nth-child(1){animation:slideFromLeft .8s 3.8s cubic-bezier(.34,1.2,.64,1) both;}
+#home-screen.show .app-card:nth-child(2){animation:slideFromRight .8s 4s cubic-bezier(.34,1.2,.64,1) both;}
 </style>
 </head>
 <body>
@@ -198,7 +226,7 @@ body{
 
 <!-- PIN EKRANI -->
 <div id="pin-screen">
-  <div class="pin-logo">İş Araçları<small>Profesyonel Takip Sistemi</small></div>
+  <div class="pin-logo">Keskeen Design<small>Profesyonel İş Araçları</small></div>
   <div class="pin-title">PIN girin</div>
   <div class="pin-dots">
     <div class="pin-dot" id="d0"></div>
@@ -229,7 +257,7 @@ body{
 
 <!-- ANA SAYFA -->
 <div id="home-screen">
-  <div class="home-logo">İş Araçları<small>Profesyonel Takip Sistemi</small></div>
+  <div class="home-logo">Keskeen Design<small>Profesyonel İş Araçları</small></div>
   <div class="app-grid">
     <div class="app-card fiyat" onclick="openApp('testler-fiyat.html')">
       <div class="app-icon">🏷️</div>
