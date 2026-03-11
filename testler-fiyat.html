@@ -4,14 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FiyatHesap Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--border:#1e3a5f;
-    --a1:#f97316;--a2:#fbbf24;--a3:#34d399;--a4:#60a5fa;--a5:#a78bfa;
-    --text:#f1f5f9;--muted:#64748b;
-    --grad:linear-gradient(135deg,#f97316,#a78bfa,#60a5fa);
-    --wb:rgba(251,191,36,.07);--wbr:rgba(251,191,36,.25);--wt:#fbbf24;--wv:#fcd34d;
+    --bg:#fffdf5;--surface:#ffffff;--surface2:#fffbeb;--border:#fde68a;
+    --a1:#ea580c;--a2:#ca8a04;--a3:#65a30d;--a4:#b45309;--a5:#d97706;
+    --text:#422006;--muted:#92400e;
+    --grad:linear-gradient(135deg,#fbbf24,#d97706,#ca8a04);
+    --wb:rgba(202,138,4,.07);--wbr:rgba(202,138,4,.25);--wt:#ca8a04;--wv:#b45309;
+  }
+  [data-theme="dark"]{
+    --bg:#1a1200;--surface:#231a00;--surface2:#2e2200;--border:#4a3800;
+    --a1:#fb923c;--a2:#fbbf24;--a3:#86efac;--a4:#fcd34d;--a5:#fde68a;
+    --text:#fefce8;--muted:#ca8a04;
+    --grad:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);
+    --wb:rgba(251,191,36,.07);--wbr:rgba(251,191,36,.25);--wt:#fbbf24;--wv:#fde68a;
   }
   [data-theme="light"]{
     --bg:#f8faff;--surface:#ffffff;--surface2:#f0f4ff;--border:#c7d9f0;
@@ -22,20 +29,20 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{transition:background .4s,color .4s;}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;background:
-    radial-gradient(ellipse 700px 500px at 5% 15%,rgba(249,115,22,.07) 0%,transparent 70%),
-    radial-gradient(ellipse 600px 500px at 95% 85%,rgba(96,165,250,.08) 0%,transparent 70%),
-    radial-gradient(ellipse 500px 400px at 50% 50%,rgba(167,139,250,.05) 0%,transparent 70%);
+    radial-gradient(ellipse 700px 500px at 5% 15%,rgba(251,191,36,.08) 0%,transparent 70%),
+    radial-gradient(ellipse 600px 500px at 95% 85%,rgba(202,138,4,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 500px 400px at 50% 50%,rgba(234,88,12,.04) 0%,transparent 70%);
     pointer-events:none;z-index:0;}
   .wrap{max-width:1140px;margin:0 auto;padding:24px;position:relative;z-index:1;}
 
   header{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
-  .logo{font-family:'Syne',sans-serif;font-size:25px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .logo{font-family:'DM Serif Display',serif;font-size:25px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .logo small{font-weight:400;font-size:11px;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
 
   .tab-nav{display:flex;gap:5px;background:var(--surface);padding:5px;border-radius:14px;border:1px solid var(--border);flex-wrap:wrap;}
-  .tb{font-family:'DM Sans',sans-serif;padding:8px 14px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-weight:500;transition:all .25s;white-space:nowrap;}
+  .tb{font-family:'Nunito',sans-serif;padding:8px 14px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-weight:500;transition:all .25s;white-space:nowrap;}
   .tb:hover{color:var(--text);background:var(--surface2);}
   .tb.active{background:var(--grad);color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(167,139,250,.25);}
   .tab{display:none;}.tab.active{display:block;}
@@ -45,7 +52,7 @@
   .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);transition:height .25s;}
   .card:hover::before{height:4px;}
   @keyframes cardIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-  .ctitle{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .ctitle{font-family:'DM Serif Display',serif;font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
   .ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
   .io{background:rgba(255,107,107,.15);}.iy{background:rgba(255,217,61,.15);}.ig{background:rgba(107,203,119,.15);}
   .ib{background:rgba(77,150,255,.15);}.ip{background:rgba(199,125,255,.15);}.iw{background:rgba(180,120,60,.2);}
@@ -56,7 +63,7 @@
   label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase;}
   input[type=text],input[type=number],select{
     width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;
-    padding:9px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;
+    padding:9px 11px;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;outline:none;
     transition:border-color .2s,box-shadow .2s;}
   input:focus,select:focus{border-color:var(--a4);box-shadow:0 0 0 3px rgba(96,165,250,.12);outline:none;}
   select option{background:var(--surface2);}
@@ -112,18 +119,18 @@
   /* SABİT TOPLAM */
   .ssum{background:rgba(77,150,255,.07);border:1px solid rgba(77,150,255,.2);border-radius:10px;padding:12px 15px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px;}
   .ssum .sl{font-size:12px;color:var(--a4);font-weight:600;}
-  .ssum .sv{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--a4);}
+  .ssum .sv{font-family:'DM Serif Display',serif;font-size:19px;font-weight:800;color:var(--a4);}
 
   /* NET KAR */
   .nkbox{background:rgba(107,203,119,.07);border:2px solid rgba(107,203,119,.3);border-radius:13px;padding:16px;}
   .nkbox .nklbl{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--a3);margin-bottom:9px;}
   .nkwrap{position:relative;}
-  .nkwrap input{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--a3);background:rgba(107,203,119,.08);border:2px solid rgba(107,203,119,.3);border-radius:10px;padding:10px 13px 10px 30px;width:100%;}
+  .nkwrap input{font-family:'DM Serif Display',serif;font-size:20px;font-weight:800;color:var(--a3);background:rgba(107,203,119,.08);border:2px solid rgba(107,203,119,.3);border-radius:10px;padding:10px 13px 10px 30px;width:100%;}
   .nkwrap input:focus{border-color:var(--a3);box-shadow:0 0 0 3px rgba(107,203,119,.1);}
   .nkwrap .tls{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--a3);font-weight:700;}
 
   /* BUTTONS */
-  .btn{font-family:'DM Sans',sans-serif;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+  .btn{font-family:'Nunito',sans-serif;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
   .bico{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--a1);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
   .bico:hover{background:rgba(255,107,107,.15);border-color:var(--a1);}
   .badd{background:rgba(107,203,119,.12);color:var(--a3);border:1px solid rgba(107,203,119,.25);margin-top:5px;}
@@ -144,7 +151,7 @@
 
   /* SONUÇ KUTULARI */
   .rbox{background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:10px;}
-  .rplat{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .rplat{font-family:'DM Serif Display',serif;font-size:14px;font-weight:700;margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
   .rrows{display:flex;flex-direction:column;gap:4px;}
   .rrow{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:2px 0;}
   .rrow .rl{color:var(--muted);}
@@ -158,7 +165,7 @@
   .slist{display:flex;flex-direction:column;gap:10px;}
   .si{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:15px;display:flex;align-items:flex-start;justify-content:space-between;transition:border-color .2s;flex-wrap:wrap;gap:9px;}
   .si:hover{border-color:var(--a5);}
-  .sin{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:3px;}
+  .sin{font-family:'DM Serif Display',serif;font-weight:700;font-size:14px;margin-bottom:3px;}
   .sim{font-size:12px;color:var(--muted);line-height:1.7;}
   .sip{text-align:right;flex-shrink:0;}
   .sip .sc{font-size:12px;color:var(--muted);margin-bottom:2px;}
@@ -168,7 +175,7 @@
 
   .divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
   .ibar{background:rgba(255,217,61,.08);border:1px solid rgba(255,217,61,.2);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--a2);margin-bottom:15px;line-height:1.6;}
-  .slbl{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+  .slbl{font-family:'DM Serif Display',serif;font-size:13px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
 
 
   /* USD badge */
@@ -275,6 +282,7 @@
     <div class="tab-nav">
       <button class="tb active" onclick="sw('hesapla',this)">🧮 Hesapla</button>
       <button class="tb"        onclick="sw('hammadde',this)">🪵 Hammadde</button>
+      <button class="tb"        onclick="sw('kargo',this)">🚚 Kargo</button>
       <button class="tb"        onclick="sw('sabit',this)">⚙️ Genel Giderler</button>
       <button class="tb"        onclick="sw('urunler',this)">📦 Ürünlerim</button>
     </div>
@@ -346,10 +354,6 @@
     <div class="ctitle"><div class="ico iy">💰</div>İşçilik & Diğer Maliyetler</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div class="fg">
-        <label>🚚 Kargo (₺)</label>
-        <input type="number" id="kargoManuel" placeholder="0.00" min="0" step="0.01" oninput="hesapla()">
-      </div>
-      <div class="fg">
         <label>🔨 İşçilik / Emek (₺)</label>
         <input type="number" id="iscilik" placeholder="0.00" min="0" step="0.01">
       </div>
@@ -391,7 +395,7 @@
     <div class="ctitle"><div class="ico ib">🛒</div>Satış Platformları</div>
     <div class="ibar">
       💡 Komisyon ve KDV oranları <strong>kategoriye göre değişir</strong> — kendi ürün kategorinize ait oranları girin.<br>
-      Etsy için USD dönüşüm yapılır. Kargo bedelini <strong>💰 İşçilik & Diğer Maliyetler</strong> bölümüne girin.
+      Etsy için USD dönüşüm yapılır. Kargo bedelleri için <strong>🚚 Kargo</strong> sekmesini kullanın.
     </div>
     <div class="kur-row">
       <label>🌿 Etsy – USD/TL Kuru</label>
@@ -455,6 +459,18 @@
       <span class="wl">Kayıtlı hammadde sayısı</span>
       <span class="wv" id="hmCount">0 adet</span>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════ KARGO ═══════════ -->
+<div id="tab-kargo" class="tab">
+  <div class="card">
+    <div class="ctitle"><div class="ico io">✏️</div>Platform Bazlı Kargo Bedelleri</div>
+    <div class="ibar">Her platform / kanal için kargo bedelinizi girin. Hesapla sekmesinde otomatik uygulanır.</div>
+    <div class="gr-hdr"><label>Platform / Kanal</label><label>Kargo Bedeli (₺)</label><span></span></div>
+    <div id="kargoList"></div>
+    <button class="btn badd" onclick="addKargoRow()">➕ Satır Ekle</button>
+    <div style="margin-top:12px;"><button class="btn bsave" onclick="saveKargo()">💾 Kaydet</button></div>
   </div>
 </div>
 
@@ -531,11 +547,12 @@ const BASLANGIC_PLAT = [
 
 let savedProds  = JSON.parse(localStorage.getItem('fhp_urunler')  || '[]');
 let sabitList   = JSON.parse(localStorage.getItem('fhp_sabit')    || '[]');
+let kargoList   = JSON.parse(localStorage.getItem('fhp_kargo')    || '[]');
 let hammaddeler = JSON.parse(localStorage.getItem('fhp_hammadde') || '[]');
 let platData    = JSON.parse(localStorage.getItem('fhp_plat')     || 'null');
 let lastResult  = null;
 let editingIdx  = null;
-let cnt = {ah:0, dis:0, sabit:0, hm:0, plat:0};
+let cnt = {ah:0, dis:0, sabit:0, kargo:0, hm:0, plat:0};
 
 // ════════════ GOOGLE SHEETS SYNC ════════════
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwoljMq2NJUv8EWRUHil_BvnTceNOsXlLM9Mih8_jFREQRe_71U5MSyaa8a7jXMvOXw/exec';
@@ -620,6 +637,7 @@ function init(){
   addAhsap();
   addDis();
   renderSabit();
+  renderKargo();
   renderHammadde();
   renderPlatList();
   renderSaved();
@@ -688,6 +706,7 @@ function sw(tab, btn){
     if(checkPendingUpdates()) showUpdateBanner();
   }
   if(tab==='sabit')     { renderSabit(); calcSabitPay(); }
+  if(tab==='kargo')     renderKargo();
   if(tab==='hammadde')  renderHammadde();
 }
 
@@ -733,6 +752,7 @@ function savePlatData(){
   const kurEl = document.getElementById('etsy_kur');
   if(kurEl) syncYaz('fhp_etsy_kur', kurEl.value);
   syncYaz('fhp_plat', platData);
+  syncKargoWithPlat();
 }
 
 function getPlatforms(){
@@ -750,7 +770,7 @@ function getPlatforms(){
       result.push({
         emoji: row.querySelector('.plat-emoji').textContent,
         name, komisyon: kom, kdvOrani,
-        kargo: parseFloat(document.getElementById('kargoManuel').value)||0,
+        kargo: getKargo(name),
         isEtsy, etsy_kur
       });
     }
@@ -900,7 +920,7 @@ function recalcSavedProds(){
     u.platforms = platlar.filter(p=>p.name).map(p=>{
       const koR = (parseFloat(p.komisyon)||0)/100;
       const kdvOrani = (parseFloat(p.kdv)||0)/100;
-      const kg = parseFloat(document.getElementById('kargoManuel').value)||0;
+      const kg = getKargo(p.name);
       if(koR >= 1) return {name:p.name, fiyat:0, net:0};
       const payda = kdvOrani>0 ? (1-koR-kdvOrani/(1+kdvOrani)) : (1-koR);
       const sf    = (hamMal+kg+netKar)/payda;
@@ -1117,6 +1137,44 @@ function showToast(msg){
   t._to = setTimeout(()=>{ t.style.opacity='0'; }, 3000);
 }
 
+// ════════════ KARGO ════════════
+function syncKargoWithPlat(){
+  // Platforma yeni isim eklenince kargo listesini senkronize et (mevcut kayıtları bozmaz)
+}
+function renderKargo(){
+  document.getElementById('kargoList').innerHTML=''; cnt.kargo=0;
+  // Kayıtlı kargo satırları
+  if(kargoList.length>0){
+    kargoList.forEach(k=>addKargoRow(k.platform, k.bedel));
+  } else {
+    // İlk açılışta platform isimlerinden oluştur
+    const data = platData || BASLANGIC_PLAT;
+    data.forEach(p=>{ if(p.name) addKargoRow(p.name,''); });
+  }
+}
+function addKargoRow(platform='', bedel=''){
+  cnt.kargo++;
+  const id='kargo_'+cnt.kargo;
+  const div=document.createElement('div'); div.className='gr'; div.id=id;
+  div.innerHTML=`
+    <input type="text" placeholder="Platform adı" value="${platform}" oninput="saveKargoAuto()">
+    <input type="number" placeholder="0.00" min="0" step="0.01" value="${bedel}" oninput="saveKargoAuto()">
+    <button class="bico" onclick="removeRow('${id}');saveKargoAuto()">×</button>`;
+  document.getElementById('kargoList').appendChild(div);
+}
+function saveKargoAuto(){
+  kargoList=[];
+  document.querySelectorAll('#kargoList .gr').forEach(r=>{
+    const inp=r.querySelectorAll('input');
+    if(inp[0].value.trim()) kargoList.push({platform:inp[0].value.trim(), bedel:inp[1].value});
+  });
+  syncYaz('fhp_kargo', kargoList);
+}
+function saveKargo(){saveKargoAuto();alert('✅ Kargo bedelleri kaydedildi!');}
+function getKargo(name){
+  const f=kargoList.find(k=>k.platform===name);
+  return f?(parseFloat(f.bedel)||0):0;
+}
 
 // ════════════ YARDIMCI ════════════
 function removeRow(id){const el=document.getElementById(id);if(el)el.remove();}
@@ -1642,7 +1700,7 @@ function urunCikti(idx){
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;600&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'DM Sans',sans-serif;background:#f5f5f5;padding:30px;}
+  body{font-family:'Nunito',sans-serif;background:#f5f5f5;padding:30px;}
   .page{background:#fff;max-width:620px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);}
   .hdr{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:24px 28px;display:flex;gap:20px;align-items:flex-start;}
   .hdr-text h1{font-family:'Syne',sans-serif;font-size:22px;color:#fff;margin-bottom:6px;}
