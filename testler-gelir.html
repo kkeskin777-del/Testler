@@ -4,33 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MaliTablo — Gelir & Gider Takibi</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:     #0a0e1a;
-  --bg2:    #080c16;
-  --surface:#111827;
-  --surface2:#0d2535;
-  --border: rgba(0,212,255,.07);
-  --border2:rgba(0,212,255,.12);
-  --text:   #e0f4ff;
-  --muted:  #5a8fa8;
-  --income: #00ff9d;   /* yeşil */
-  --income2:#00d4aa;
-  --expense:#f97316;   /* kırmızı */
-  --expense2:#e84545;
-  --gold:   #ffd93d;
-  --purple: #a78bfa;
-  --blue:   #4cc9f0;
-  --grad-income: linear-gradient(135deg,#34d399,#60a5fa);
-  --grad-expense:linear-gradient(135deg,#f97316,#a78bfa);
+  --bg:     #0a1520;
+  --bg2:    #0f1e2e;
+  --surface:#0f1e2e;
+  --surface2:#132438;
+  --border: rgba(251,191,36,.1);
+  --border2:rgba(251,191,36,.18);
+  --text:   #e8f4ff;
+  --muted:  #6a9ab8;
+  --green:  #86efac;
+  --red:    #fca5a5;
+  --purple: #fbbf24;
+  --blue:   #fcd34d;
+  --grad:linear-gradient(135deg,#ca8a04,#d97706,#92400e);
+  --grad-income: linear-gradient(135deg,#fbbf24,#d97706);
+  --grad-expense:linear-gradient(135deg,#f97316,#fcd34d);
   --grad-amber:  linear-gradient(135deg,#e6a817,#c47d0e);
-  --kdv-red:     #c0392b;
   --grad-gold:   linear-gradient(135deg,#ffd93d,#ff9f1c);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
-  font-family:'DM Sans',sans-serif;
+  font-family:'Nunito',sans-serif;
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
@@ -45,7 +42,7 @@ header{
   position:sticky;top:0;z-index:100;
 }
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.5px;}
+.logo{font-family:'Libre Baskerville',serif;font-weight:800;font-size:22px;letter-spacing:-.5px;}
 .logo span{background:var(--grad-income);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .logo em{font-style:normal;color:var(--muted);font-weight:400;font-size:13px;margin-left:8px;}
 
@@ -54,7 +51,7 @@ header{
 .filter-bar select,.filter-bar button{
   background:var(--surface2);border:1px solid var(--border2);
   color:var(--text);border-radius:9px;padding:7px 13px;
-  font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:13px;cursor:pointer;
   transition:border-color .2s;
 }
 .filter-bar select:focus,.filter-bar button:focus{outline:none;border-color:var(--purple);}
@@ -69,7 +66,7 @@ header{
 .tabs{display:flex;gap:4px;margin-top:12px;}
 .tb{
   padding:10px 20px;border-radius:10px 10px 0 0;
-  font-family:'Syne',sans-serif;font-weight:600;font-size:13px;
+  font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;
   border:1px solid transparent;border-bottom:none;
   cursor:pointer;background:transparent;color:var(--muted);
   transition:all .18s;
@@ -96,7 +93,7 @@ header{
 .scard.net.negative::before{background:var(--grad-expense);}
 .scard.kdv::before{background:linear-gradient(90deg,var(--blue),var(--purple));}
 .scard-lbl{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.scard-val{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;line-height:1;}
+.scard-val{font-family:'Nunito',sans-serif;font-weight:800;font-size:24px;line-height:1;}
 .scard.income .scard-val{background:var(--grad-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .scard.expense .scard-val{background:var(--grad-amber);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .scard.net.positive .scard-val{background:var(--grad-income);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -106,18 +103,18 @@ header{
 
 /* ── DÖNEM BAŞLIĞI ── */
 .period-title{
-  font-family:'Syne',sans-serif;font-weight:700;font-size:18px;
+  font-family:'Libre Baskerville',serif;font-weight:700;font-size:18px;
   margin-bottom:18px;display:flex;align-items:center;gap:10px;
 }
 .period-badge{
   font-size:12px;font-weight:600;color:var(--purple);
-  background:rgba(199,125,255,.1);border:1px solid rgba(199,125,255,.2);
+  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);
   border-radius:6px;padding:3px 10px;
 }
 
 /* ── GİRİŞ FORMU ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;}
-.ctitle{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:9px;}
+.ctitle{font-family:'Libre Baskerville',serif;font-weight:700;font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:9px;}
 .ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
 .ico.ig{background:rgba(61,214,140,.15);}
 .ico.ir{background:rgba(255,107,107,.15);}
@@ -130,7 +127,7 @@ header{
 .fg input,.fg select,.fg textarea{
   background:var(--surface2);border:1px solid var(--border2);
   color:var(--text);border-radius:9px;padding:9px 12px;
-  font-family:'DM Sans',sans-serif;font-size:13px;
+  font-family:'Nunito',sans-serif;font-size:13px;
   transition:border-color .2s;width:100%;
 }
 .fg input:focus,.fg select:focus{outline:none;border-color:var(--purple);}
@@ -140,7 +137,7 @@ header{
 .btn{
   background:var(--surface2);border:1px solid var(--border2);
   color:var(--text);border-radius:9px;padding:9px 16px;
-  font-family:'Syne',sans-serif;font-weight:600;font-size:13px;
+  font-family:'Nunito',sans-serif;font-weight:600;font-size:13px;
   cursor:pointer;transition:all .18s;white-space:nowrap;
 }
 .btn:hover{border-color:var(--border2);filter:brightness(1.1);}
@@ -170,7 +167,7 @@ header{
 .entry.expense-row{grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;}
 .entry-name{font-weight:500;font-size:13px;}
 .entry-name small{display:block;font-size:11px;color:var(--muted);margin-top:2px;}
-.entry-val{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+.entry-val{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;}
 .entry-val.green{color:var(--income);}
 .entry-val.red{color:var(--expense);}
 .entry-val.muted{color:var(--muted);font-weight:500;font-size:13px;}
@@ -195,9 +192,9 @@ header{
 .month-table td{padding:11px 12px;border-bottom:1px solid var(--border);}
 .month-table tr:last-child td{border-bottom:none;}
 .month-table tr:hover td{background:rgba(255,255,255,.02);}
-.month-table .mn{font-family:'Syne',sans-serif;font-weight:600;}
-.month-table .pos{color:var(--income);font-family:'Syne',sans-serif;font-weight:700;}
-.month-table .neg{color:var(--expense);font-family:'Syne',sans-serif;font-weight:700;}
+.month-table .mn{font-family:'Nunito',sans-serif;font-weight:600;}
+.month-table .pos{color:var(--income);font-family:'Nunito',sans-serif;font-weight:700;}
+.month-table .neg{color:var(--expense);font-family:'Nunito',sans-serif;font-weight:700;}
 .month-table .neu{color:var(--muted);}
 .month-table .clickable{cursor:pointer;}
 .month-table .clickable:hover .mn{color:var(--purple);text-decoration:underline;}
@@ -209,7 +206,7 @@ header{
 .bar-track{flex:1;height:28px;background:var(--surface2);border-radius:6px;overflow:hidden;display:flex;}
 .bar-income{background:var(--grad-income);border-radius:6px 0 0 6px;transition:width .4s ease;}
 .bar-expense{background:var(--grad-expense);border-radius:0 6px 6px 0;transition:width .4s ease;}
-.bar-vals{font-family:'Syne',sans-serif;font-size:11px;display:flex;gap:6px;width:200px;flex-shrink:0;}
+.bar-vals{font-family:'Nunito',sans-serif;font-size:11px;display:flex;gap:6px;width:200px;flex-shrink:0;}
 .bar-val-i{color:var(--income);}
 .bar-val-e{color:var(--expense);}
 
@@ -217,17 +214,17 @@ header{
 .kdv-box{background:rgba(76,201,240,.05);border:1px solid rgba(76,201,240,.15);border-radius:12px;padding:16px 18px;}
 .kdv-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(76,201,240,.1);font-size:13px;}
 .kdv-row:last-child{border-bottom:none;font-weight:700;}
-.kdv-row span:last-child{font-family:'Syne',sans-serif;font-weight:600;}
+.kdv-row span:last-child{font-family:'Nunito',sans-serif;font-weight:600;}
 
 /* ── YIL SEKMELERİ (arşiv) ── */
 .year-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
 .ytb{
   padding:7px 16px;border-radius:8px;font-size:13px;
-  font-family:'Syne',sans-serif;font-weight:600;
+  font-family:'Nunito',sans-serif;font-weight:600;
   cursor:pointer;background:var(--surface2);
   border:1px solid var(--border);color:var(--muted);transition:all .18s;
 }
-.ytb.active,.ytb:hover{background:rgba(199,125,255,.12);color:var(--purple);border-color:rgba(199,125,255,.3);}
+.ytb.active,.ytb:hover{background:rgba(251,191,36,.12);color:var(--purple);border-color:rgba(251,191,36,.3);}
 
 /* ── AYLIK DETAY ── */
 .month-detail-header{
@@ -248,14 +245,14 @@ header{
   .modal::before{content:'';display:block;height:3px;background:var(--grad-income);}
   .modal.expense-modal::before{background:var(--grad-expense);}
   .modal-hdr{padding:16px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .modal-hdr h3{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+  .modal-hdr h3{font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;}
   .modal-close{background:var(--surface2);border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
   .modal-close:hover{color:var(--expense);}
   .modal-body{padding:20px;}
   .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
   .modal-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
-  .btn-edit{background:rgba(199,125,255,.1);color:var(--purple);border:1px solid rgba(199,125,255,.25);padding:6px 11px;border-radius:8px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;cursor:pointer;}
-  .btn-edit:hover{background:rgba(199,125,255,.2);}
+  .btn-edit{background:rgba(251,191,36,.1);color:var(--purple);border:1px solid rgba(251,191,36,.25);padding:6px 11px;border-radius:8px;font-size:12px;font-family:'Nunito',sans-serif;font-weight:600;cursor:pointer;}
+  .btn-edit:hover{background:rgba(251,191,36,.2);}
   .btn-save{background:rgba(61,214,140,.12);color:var(--income);border:1px solid rgba(61,214,140,.25);}
   .btn-save:hover{background:rgba(61,214,140,.22);}
 
@@ -848,7 +845,7 @@ function renderArsiv(){
 
   siralı.forEach(yil=>{
     html += `<div style="margin-bottom:24px;">
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:12px;color:var(--purple);">📅 ${yil}</div>
+      <div style="font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;margin-bottom:12px;color:var(--purple);">📅 ${yil}</div>
       <table class="month-table">
         <thead><tr><th>Ay</th><th>Gelir (KDV Hariç)</th><th>Gider (KDV Hariç)</th><th>Net Kâr</th><th>KDV Durumu</th></tr></thead>
         <tbody>`;
@@ -878,7 +875,7 @@ function renderArsiv(){
       const yNet  = yTopGelir - yTopGider;
       const yNetG = yTopKdv > 0 ? yNet - yTopKdv : yNet;
       html+=`<tr style="border-top:2px solid var(--border2);">
-        <td><strong style="font-family:'Syne',sans-serif;">Yıl Toplamı</strong></td>
+        <td><strong style="font-family:'Nunito',sans-serif;">Yıl Toplamı</strong></td>
         <td><strong class="pos">${fmt(yTopGelir)} ₺</strong></td>
         <td><strong class="neg">${fmt(yTopGider)} ₺</strong></td>
         <td><strong class="${yNetG>=0?'pos':'neg'}">${yNetG>=0?'+':''}${fmt(yNetG)} ₺</strong></td>
