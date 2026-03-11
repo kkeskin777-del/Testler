@@ -173,7 +173,7 @@
 
 
   /* ÖZET POPUP */
-  .urun-popup{position:fixed;z-index:500;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;width:420px;max-width:calc(100vw - 32px);max-height:calc(100vh - 48px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden;pointer-events:auto;}
+  .urun-popup{position:fixed;z-index:500;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;width:630px;max-width:calc(100vw - 32px);max-height:calc(100vh - 48px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden;pointer-events:auto;}
   .urun-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);z-index:1;}
   .up-hdr{padding:13px 16px 11px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;cursor:grab;user-select:none;flex-shrink:0;}
   .up-hdr-inner{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;}
@@ -1348,8 +1348,8 @@ function popupAc(idx, card){
   // Merkeze yerleştir
   popup.style.display = 'flex';
   requestAnimationFrame(()=>{
-    const pw = popup.offsetWidth  || 420;
-    const ph = popup.offsetHeight || 360;
+    const pw = popup.offsetWidth  || 630;
+    const ph = popup.offsetHeight || 500;
     popup.style.left = Math.max(8, Math.round((window.innerWidth  - pw) / 2)) + 'px';
     popup.style.top  = Math.max(8, Math.round((window.innerHeight - ph) / 2) + window.scrollY) + 'px';
   });
