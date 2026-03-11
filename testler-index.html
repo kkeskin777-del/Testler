@@ -63,10 +63,10 @@ body{
   background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   text-align:center;
-  animation:logoReveal 3s ease-out both;
+  animation:logoReveal 2s ease-out both;
   letter-spacing:2px;
 }
-.pin-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:6px;animation:fadeDown 3s ease-out both;opacity:0;animation-fill-mode:both;}
+.pin-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:6px;animation:fadeDown 2s ease-out both;opacity:0;animation-fill-mode:both;}
 @keyframes logoReveal{
   0%{opacity:0;transform:scale(.96) translateY(-6px);}
   100%{opacity:1;transform:scale(1) translateY(0);}
@@ -84,9 +84,9 @@ body{
   100%{opacity:1;transform:translateX(0);}
 }
 
-.pin-title{font-size:14px;color:var(--muted);letter-spacing:1px;animation:fadeDown 3s ease-out both;opacity:0;animation-fill-mode:both;}
+.pin-title{font-size:14px;color:var(--muted);letter-spacing:1px;animation:fadeDown 2s ease-out both;opacity:0;animation-fill-mode:both;}
 
-.pin-dots{display:flex;gap:14px;margin:4px 0;animation:fadeDown 3s ease-out both;opacity:0;animation-fill-mode:both;}
+.pin-dots{display:flex;gap:14px;margin:4px 0;animation:fadeDown 2s ease-out both;opacity:0;animation-fill-mode:both;}
 .pin-dot{
   width:15px;height:15px;border-radius:50%;
   border:2px solid var(--border);background:transparent;
@@ -94,7 +94,7 @@ body{
 }
 .pin-dot.filled{background:var(--accent1);border-color:var(--accent1);transform:scale(1.2);box-shadow:0 0 10px rgba(0,212,255,.5);}
 
-.pin-pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;animation:fadeUp 3s ease-out both;opacity:0;animation-fill-mode:both;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;animation:fadeUp 2s ease-out both;opacity:0;animation-fill-mode:both;}
 .pin-btn{
   width:76px;height:76px;border-radius:50%;
   background:var(--surface);border:1px solid var(--border);
@@ -128,8 +128,8 @@ body{
   letter-spacing:2px;
 }
 .home-logo small{font-size:11px;font-weight:400;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:6px;}
-#home-screen.show .home-logo{animation:homeLogoReveal 3s ease-out both;}
-#home-screen.show .home-logo small{animation:fadeDown 3s ease-out both;opacity:0;animation-fill-mode:both;}
+#home-screen.show .home-logo{animation:homeLogoReveal 2s ease-out both;}
+#home-screen.show .home-logo small{animation:fadeDown 2s ease-out both;opacity:0;animation-fill-mode:both;}
 
 .app-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:500px;}
 
@@ -204,8 +204,8 @@ body{
 
 .app-card:nth-child(1){opacity:0;}
 .app-card:nth-child(2){opacity:0;}
-#home-screen.show .app-card:nth-child(1){animation:slideFromLeft 3s ease-out both;}
-#home-screen.show .app-card:nth-child(2){animation:slideFromRight 3s ease-out both;}
+#home-screen.show .app-card:nth-child(1){animation:slideFromLeft 2s ease-out both;}
+#home-screen.show .app-card:nth-child(2){animation:slideFromRight 2s ease-out both;}
 </style>
 </head>
 <body>
