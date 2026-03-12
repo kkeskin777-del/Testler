@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FiyatHesap Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a1520;--surface:#0f1e2e;--surface2:#132438;--border:#1e3a5f;
+    --a1:#fb923c;--a2:#fbbf24;--a3:#86efac;--a4:#fcd34d;--a5:#fde68a;
+    --text:#e8f4ff;--muted:#6a9ab8;
+    --grad:linear-gradient(135deg,#ca8a04,#d97706,#92400e);
+    --wb:rgba(251,191,36,.08);--wbr:rgba(251,191,36,.3);--wt:#fbbf24;--wv:#fde68a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{transition:background .4s,color .4s;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:
+    radial-gradient(ellipse 700px 500px at 5% 15%,rgba(202,138,4,.08) 0%,transparent 70%),
+    radial-gradient(ellipse 600px 500px at 95% 85%,rgba(146,64,14,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 400px 400px at 50% 50%,rgba(251,191,36,.04) 0%,transparent 70%);
+    pointer-events:none;z-index:0;}
+  .wrap{max-width:1140px;margin:0 auto;padding:24px;position:relative;z-index:1;}
+
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
+  .logo{font-family:'Libre Baskerville',serif;font-size:23px;font-weight:700;letter-spacing:1px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .logo small{font-weight:400;font-size:11px;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+
+  .tab-nav{display:flex;gap:5px;background:var(--surface);padding:5px;border-radius:14px;border:1px solid var(--border);flex-wrap:wrap;}
+  .tb{font-family:'Nunito',sans-serif;padding:8px 14px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-weight:500;transition:all .25s;white-space:nowrap;}
+  .tb:hover{color:var(--text);background:var(--surface2);}
+  .tb.active{background:var(--grad);color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(167,139,250,.25);}
+  .tab{display:none;}.tab.active{display:block;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:16px;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s;animation:cardIn .4s ease both;}
+  .card:hover{border-color:var(--a4);box-shadow:0 8px 32px rgba(96,165,250,.08);}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);transition:height .25s;}
+  .card:hover::before{height:4px;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .ctitle{font-family:'Libre Baskerville',serif;font-size:14px;font-weight:700;letter-spacing:.3px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+  .io{background:rgba(255,107,107,.15);}.iy{background:rgba(255,217,61,.15);}.ig{background:rgba(107,203,119,.15);}
+  .ib{background:rgba(77,150,255,.15);}.ip{background:rgba(199,125,255,.15);}.iw{background:rgba(180,120,60,.2);}
+
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;}
+
+  label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase;}
+  input[type=text],input[type=number],select{
+    width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+    padding:9px 11px;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;outline:none;
+    transition:border-color .2s,box-shadow .2s;}
+  input:focus,select:focus{border-color:var(--a2);box-shadow:0 0 0 3px rgba(251,191,36,.12);outline:none;}
+  select option{background:var(--surface2);}
+  .fg{margin-bottom:13px;}
+
+  /* AHŞAP - şimdi 7 sütun: seçici, ad, en, boy, kal, cm3f(otomatik dolu), sil */
+  .wsec{background:var(--wb);border:1px solid var(--wbr);border-radius:12px;padding:16px;margin-bottom:15px;}
+  .wtitle{font-family:'Libre Baskerville',serif;font-size:13px;font-weight:700;color:var(--wt);margin-bottom:12px;}
+  .wbar{background:rgba(180,120,60,.12);border:1px solid var(--wbr);border-radius:8px;padding:10px 14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+  .wbar .wl{font-size:12px;color:var(--wt);font-weight:600;}
+  .wbar .wv{font-family:'Libre Baskerville',serif;font-weight:800;font-size:17px;color:var(--wv);}
+
+  /* Ahşap satır: hammadde-seçici | açıklama | en | boy | kal | cm³fiyat | maliyet | sil */
+  .ah-hdr{display:grid;grid-template-columns:160px 1fr 65px 65px 65px 110px 90px 34px;gap:6px;margin-bottom:5px;align-items:end;}
+  .ah-hdr label{margin-bottom:0;font-size:10px;}
+  .ah-row{display:grid;grid-template-columns:160px 1fr 65px 65px 65px 110px 90px 34px;gap:6px;margin-bottom:7px;align-items:center;}
+  .ah-row input,.ah-row select{margin-bottom:0;font-size:13px;}
+  .ah-maliyet{background:rgba(107,203,119,.1);border:1px solid rgba(107,203,119,.25);border-radius:8px;padding:8px 9px;font-family:'Libre Baskerville',serif;font-size:12px;font-weight:700;color:var(--a3);text-align:center;white-space:nowrap;}
+
+  /* HAMMADDE sekmesi */
+  .hm-hdr{display:grid;grid-template-columns:2fr 85px 85px 85px 115px 105px 34px;gap:6px;margin-bottom:5px;align-items:end;}
+  .hm-hdr label{margin-bottom:0;font-size:10px;}
+  .hm-row{display:grid;grid-template-columns:2fr 85px 85px 85px 115px 105px 34px;gap:6px;margin-bottom:7px;align-items:center;cursor:default;}
+  .hm-row input{margin-bottom:0;}
+  .hm-badge{background:rgba(180,120,60,.12);border:1px solid var(--wbr);border-radius:8px;padding:8px 9px;font-family:'Libre Baskerville',serif;font-size:12px;font-weight:700;color:var(--wv);text-align:center;white-space:nowrap;}
+
+  /* DIS / SABİT / KARGO satırları */
+  .gr{display:grid;grid-template-columns:2fr 120px 34px;gap:6px;margin-bottom:6px;align-items:center;}
+  .gr input{margin-bottom:0;}
+  .gr-hdr{display:grid;grid-template-columns:2fr 120px 34px;gap:6px;margin-bottom:5px;}
+  .gr-hdr label{margin-bottom:0;}
+
+  /* PLATFORM KARTLARI - artık manuel komisyon girişli */
+  .plat-row{display:grid;grid-template-columns:28px 1fr 90px 80px 80px 34px;gap:8px;margin-bottom:8px;align-items:center;}
+  .plat-row input{margin-bottom:0;}
+  .plat-emoji{font-size:18px;text-align:center;}
+  .plat-name-cell{display:flex;flex-direction:column;gap:3px;}
+  .plat-name-cell input{font-weight:600;}
+  .plat-kom-cell{position:relative;}
+  .plat-kom-cell input{padding-right:22px;text-align:right;}
+  .plat-kom-cell::after{content:'%';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none;}
+  .plat-kdv-cell{position:relative;}
+  .plat-kdv-cell input{padding-right:22px;text-align:right;background:rgba(77,150,255,.06);border-color:rgba(77,150,255,.25);}
+  .plat-kdv-cell::after{content:'%';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none;}
+  .plat-kargo-cell{position:relative;}
+  .plat-kargo-cell input{padding-right:20px;text-align:right;background:rgba(251,191,36,.05);border-color:rgba(251,191,36,.2);}
+  .plat-kargo-cell::after{content:'₺';position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none;}
+  .plat-hdr{display:grid;grid-template-columns:28px 1fr 90px 80px 80px 34px;gap:8px;margin-bottom:6px;}
+  .plat-hdr label{margin-bottom:0;font-size:10px;}
+
+  /* KARGO */
+  .kinfo{background:rgba(255,217,61,.06);border:1px solid rgba(255,217,61,.15);border-radius:10px;padding:13px;margin-bottom:12px;}
+  .kinfo .kf{font-family:'Libre Baskerville',serif;font-weight:700;font-size:13px;margin-bottom:3px;}
+  .kinfo .ka{font-size:12px;color:var(--muted);line-height:1.6;}
+
+  /* SABİT TOPLAM */
+  .ssum{background:rgba(77,150,255,.07);border:1px solid rgba(77,150,255,.2);border-radius:10px;padding:12px 15px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px;}
+  .ssum .sl{font-size:12px;color:var(--a4);font-weight:600;}
+  .ssum .sv{font-family:'Libre Baskerville',serif;font-size:19px;font-weight:800;color:var(--a4);}
+
+  /* NET KAR */
+  .nkbox{background:rgba(107,203,119,.07);border:2px solid rgba(107,203,119,.3);border-radius:13px;padding:16px;}
+  .nkbox .nklbl{font-family:'Libre Baskerville',serif;font-size:12px;font-weight:700;color:var(--a3);margin-bottom:9px;}
+  .nkwrap{position:relative;}
+  .nkwrap input{font-family:'Libre Baskerville',serif;font-size:20px;font-weight:800;color:var(--a3);background:rgba(107,203,119,.08);border:2px solid rgba(107,203,119,.3);border-radius:10px;padding:10px 13px 10px 30px;width:100%;}
+  .nkwrap input:focus{border-color:var(--a3);box-shadow:0 0 0 3px rgba(107,203,119,.1);}
+  .nkwrap .tls{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--a3);font-weight:700;}
+
+  /* BUTTONS */
+  .btn{font-family:'Nunito',sans-serif;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+  .bico{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--a1);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+  .bico:hover{background:rgba(255,107,107,.15);border-color:var(--a1);}
+  .badd{background:rgba(107,203,119,.12);color:var(--a3);border:1px solid rgba(107,203,119,.25);margin-top:5px;}
+  .badd:hover{background:rgba(107,203,119,.22);}
+  .bwood{background:rgba(180,120,60,.15);color:var(--wt);border:1px solid rgba(180,120,60,.3);margin-top:5px;}
+  .bwood:hover{background:rgba(180,120,60,.25);}
+  .bprim{background:var(--grad);color:#fff;padding:14px 28px;font-size:14px;border-radius:12px;width:100%;justify-content:center;position:relative;overflow:hidden;}
+  .bprim::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .2s;}
+  .bprim:hover::after{background:rgba(255,255,255,.1);}
+  .bprim:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(167,139,250,.35);}
+  .bprim:active{transform:translateY(0);}
+  .bsave{background:rgba(77,150,255,.12);color:var(--a4);border:1px solid rgba(77,150,255,.25);padding:8px 18px;}
+  .bsave:hover{background:rgba(77,150,255,.22);}
+  .bdel{background:rgba(255,107,107,.1);color:var(--a1);border:1px solid rgba(255,107,107,.2);padding:5px 11px;font-size:12px;}
+  .bdel:hover{background:rgba(255,107,107,.2);}
+  .bauto{background:rgba(77,150,255,.1);color:var(--a4);border:1px solid rgba(77,150,255,.2);padding:4px 8px;font-size:11px;margin-left:5px;border-radius:6px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:600;transition:all .2s;}
+  .bauto:hover{background:rgba(77,150,255,.2);}
+
+  /* SONUÇ KUTULARI */
+  .rbox{background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:10px;}
+  .rplat{font-family:'Libre Baskerville',serif;font-size:14px;font-weight:700;margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .rrows{display:flex;flex-direction:column;gap:4px;}
+  .rrow{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:2px 0;}
+  .rrow .rl{color:var(--muted);}
+  .rrow.hl{background:rgba(199,125,255,.07);border-radius:7px;padding:8px 10px;margin-top:5px;}
+  .rrow.hl .rl{color:var(--text);font-weight:600;}
+  .rrow.hl .rv{font-size:18px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .badge{font-size:11px;padding:3px 8px;border-radius:5px;font-weight:600;}
+  .bg{background:rgba(107,203,119,.15);color:var(--a3);}
+
+  /* KAYITLI ÜRÜNLER */
+  .slist{display:flex;flex-direction:column;gap:10px;}
+  .si{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:15px;display:flex;align-items:flex-start;justify-content:space-between;transition:border-color .2s;flex-wrap:wrap;gap:9px;}
+  .si:hover{border-color:var(--a5);}
+  .sin{font-family:'Libre Baskerville',serif;font-weight:700;font-size:14px;margin-bottom:3px;}
+  .sim{font-size:12px;color:var(--muted);line-height:1.7;}
+  .sip{text-align:right;flex-shrink:0;}
+  .sip .sc{font-size:12px;color:var(--muted);margin-bottom:2px;}
+  .sip .ss{font-family:'Libre Baskerville',serif;font-weight:700;font-size:17px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .empty{text-align:center;padding:48px 20px;color:var(--muted);}
+  .empty .eb{font-size:42px;margin-bottom:12px;}
+
+  .divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
+  .ibar{background:rgba(255,217,61,.08);border:1px solid rgba(255,217,61,.2);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--a2);margin-bottom:15px;line-height:1.6;}
+  .slbl{font-family:'Libre Baskerville',serif;font-size:13px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+
+
+  /* USD badge */
+  .usd-badge{background:rgba(107,203,119,.08);border:1px solid rgba(107,203,119,.25);border-radius:8px;padding:5px 11px;font-family:'Libre Baskerville',serif;font-size:13px;font-weight:700;color:var(--a3);display:inline-flex;align-items:center;gap:5px;}
+  /* Kur input */
+  .kur-row{display:flex;align-items:center;gap:10px;background:rgba(107,203,119,.05);border:1px solid rgba(107,203,119,.2);border-radius:9px;padding:10px 14px;margin-bottom:12px;flex-wrap:wrap;}
+  .kur-row label{font-size:11px;font-weight:600;color:var(--a3);margin:0;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;}
+  .kur-row input{width:110px;background:var(--surface2);border:1px solid rgba(107,203,119,.3);border-radius:7px;padding:6px 10px;color:var(--text);font-family:'Libre Baskerville',serif;font-weight:700;font-size:14px;outline:none;}
+
+
+  /* ÖZET POPUP */
+  .urun-popup{position:fixed;z-index:500;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:0;width:630px;max-width:calc(100vw - 32px);max-height:calc(100vh - 48px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden;pointer-events:auto;}
+  .urun-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);z-index:1;}
+  .up-hdr{padding:13px 16px 11px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;cursor:grab;user-select:none;flex-shrink:0;}
+  .up-hdr-inner{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;}
+  .up-drag{font-size:12px;color:var(--muted);letter-spacing:3px;line-height:1;}
+  .up-hdr .up-ad{font-family:'Libre Baskerville',serif;font-weight:700;font-size:15px;line-height:1.35;white-space:normal;word-break:break-word;}
+  .up-hdr .up-tarih{font-size:11px;color:var(--muted);}
+  .up-close{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+  .up-close:hover{color:var(--a1);border-color:var(--a1);}
+  .up-body{padding:12px 16px 18px;overflow-y:auto;flex:1;}
+  .up-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);}
+  .up-row:last-of-type{border-bottom:none;margin-bottom:10px;}
+  .up-row .up-lbl{color:var(--muted);white-space:nowrap;}
+  .up-row .up-val{font-weight:600;text-align:right;word-break:break-word;}
+  .up-row .up-val.green{color:var(--a3);}
+  .up-row .up-val.purple{color:var(--a5);font-size:12px;}
+  .up-plat-list{display:flex;flex-direction:column;gap:7px;}
+  .up-plat{display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border-radius:9px;padding:10px 13px;gap:10px;}
+  .up-plat .up-pn{font-size:13px;font-weight:600;}
+  .up-plat .up-net{font-size:11px;color:var(--a3);margin-top:2px;}
+  .up-plat .up-pf{font-family:'Libre Baskerville',serif;font-weight:800;font-size:16px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;}
+  .up-plat .up-pf-sub{font-size:11px;color:var(--muted);text-align:right;}
+  .up-sec{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin:10px 0 8px;}
+
+
+  /* KARŞILAŞTIRMA */
+  .kars-wrap{margin-top:22px;}
+  .kars-title{font-family:'Libre Baskerville',serif;font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .kars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+  .kars-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative;transition:border-color .2s;}
+  .kars-card:hover{border-color:var(--a5);}
+  .kars-card.best{border-color:var(--a3);box-shadow:0 0 0 1px var(--a3);}
+  .kars-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .kars-card.best::before{background:linear-gradient(90deg,var(--a3),var(--a4));}
+  .kars-card:not(.best)::before{background:var(--grad);}
+  .kars-hdr{padding:13px 15px 10px;border-bottom:1px solid var(--border);}
+  .kars-hm{font-family:'Libre Baskerville',serif;font-weight:700;font-size:14px;margin-bottom:2px;}
+  .kars-sub{font-size:11px;color:var(--muted);}
+  .kars-body{padding:12px 15px;}
+  .kars-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;}
+  .kars-row .kl{color:var(--muted);}
+  .kars-maliyet{font-family:'Libre Baskerville',serif;font-weight:800;font-size:18px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .kars-best-badge{position:absolute;top:10px;right:11px;background:rgba(107,203,119,.2);color:var(--a3);border:1px solid rgba(107,203,119,.4);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;}
+  .kars-plat{background:var(--surface2);border-radius:7px;padding:7px 10px;margin-top:6px;}
+  .kars-plat-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:2px;}
+  .kars-plat-row:last-child{margin-bottom:0;}
+  .kars-plat-name{color:var(--muted);}
+  .kars-plat-fiyat{font-family:'Libre Baskerville',serif;font-weight:700;font-size:13px;color:var(--text);}
+  .bkars{background:rgba(199,125,255,.12);color:var(--a5);border:1px solid rgba(199,125,255,.3);}
+  .bkars:hover{background:rgba(199,125,255,.22);}
+
+
+  .hm-row{cursor:default;}
+
+
+  /* FOTO DROP */
+  #fotoDrop:hover{border-color:var(--a4);}
+  #fotoDrop.drag-active{border-color:var(--a3);background:rgba(107,203,119,.08);}
+  /* PDF ÇIKTI */
+  .pdf-btn{background:rgba(77,150,255,.12);color:var(--a4);border:1px solid rgba(77,150,255,.25);}
+  .pdf-btn:hover{background:rgba(77,150,255,.22);}
+  /* Ürünlerim foto thumbnail */
+  .si-foto{width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);cursor:zoom-in;transition:transform .25s ease,box-shadow .25s ease,z-index 0s;}
+  .si-foto:hover{transform:scale(4.5) translateX(28px);box-shadow:0 8px 32px rgba(0,0,0,.7);z-index:200;border-radius:6px;position:relative;}
+  /* Kars gizle/göster */
+  #karsWrap.visible{display:block;}
+
+
+  /* DİLİMLEME */
+  .dilim-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+  .dilim-sonuc{display:flex;justify-content:space-between;align-items:center;background:rgba(199,125,255,.08);border:1px solid rgba(199,125,255,.2);border-radius:9px;padding:10px 14px;margin-top:4px;}
+  .dilim-sonuc .dl{font-size:12px;color:var(--muted);}
+  .dilim-sonuc .dv{font-family:'Libre Baskerville',serif;font-weight:800;font-size:16px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .dilim-oto{background:rgba(199,125,255,.12);color:var(--a5);border:1px solid rgba(199,125,255,.3);}
+  .dilim-oto:hover{background:rgba(199,125,255,.22);}
+
+  @media(max-width:800px){
+    .ah-hdr,.ah-row{grid-template-columns:1fr 1fr 1fr;}
+    .hm-hdr,.hm-row{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">FiyatHesap Pro<small>Ürün Maliyet & Fiyatlandırma</small></div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <div id="syncBar" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--muted);">
+      <span id="syncDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .4s;"></span>
+      <span id="syncLbl">Yükleniyor...</span>
+    </div>
+    <div class="tab-nav">
+      <button class="tb active" onclick="sw('hesapla',this)">🧮 Hesapla</button>
+      <button class="tb"        onclick="sw('hammadde',this)">🪵 Hammadde</button>
+      <button class="tb"        onclick="sw('sabit',this)">⚙️ Genel Giderler</button>
+      <button class="tb"        onclick="sw('urunler',this)">📦 Ürünlerim</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ HESAPLA ═══════════ -->
+<div id="tab-hesapla" class="tab active">
+  <!-- Düzenleme bildirimi -->
+  <div id="edit-banner" style="display:none;background:rgba(255,217,61,.1);border:1px solid rgba(255,217,61,.3);border-radius:11px;padding:11px 16px;margin-bottom:14px;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+    <span style="font-size:13px;color:var(--a2);">✏️ <strong id="edit-banner-ad"></strong> düzenleniyor — değişiklikleri yapıp hesaplayın.</span>
+    <button class="btn" style="background:rgba(255,107,107,.1);color:var(--a1);border:1px solid rgba(255,107,107,.25);padding:5px 12px;font-size:12px;" onclick="editIptal()">✕ İptal</button>
+  </div>
+  <!-- Temizle butonu -->
+  <div style="display:flex;justify-content:flex-start;margin-bottom:10px;">
+    <button class="btn" onclick="formTemizle()" style="background:rgba(255,107,107,.08);color:var(--a1);border:1px solid rgba(255,107,107,.2);padding:6px 14px;font-size:12px;display:flex;align-items:center;gap:6px;">🗑 Formu Temizle</button>
+  </div>
+
+
+  <div class="card">
+    <div class="ctitle"><div class="ico ip">📝</div>Ürün Bilgisi</div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start;">
+      <div class="fg"><label>Ürün Adı</label><input type="text" id="urunAdi" placeholder="Örn: Meşe sehpa, çam kitaplık..."></div>
+      <div>
+        <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;">Ürün Fotoğrafı</label>
+        <div id="fotoDrop" onclick="document.getElementById('fotoInput').click()"
+          style="width:90px;height:90px;border:2px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color .2s;background:var(--surface2);"
+          ondragover="fotoDragOver(event)" ondragleave="fotoDragLeave(event)" ondrop="fotoDrop(event)">
+          <img id="fotoPreview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;border-radius:8px;">
+          <div id="fotoPlaceholder" style="text-align:center;pointer-events:none;">
+            <div style="font-size:22px;">📷</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;">Ekle</div>
+          </div>
+          <button id="fotoSilBtn" onclick="fotoSil(event)" style="display:none;position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;font-size:12px;cursor:pointer;line-height:20px;text-align:center;">×</button>
+        </div>
+        <input type="file" id="fotoInput" accept="image/*" style="display:none;" onchange="fotoSecildi(this)">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle"><div class="ico iw">🪵</div>Ahşap Malzemeler</div>
+    <div class="ibar">Her satır için <strong>farklı hammadde</strong> seçebilirsiniz — aynı ürünü kayın ve meşe olarak karşılaştırın. Hammadde seçince cm³ fiyatı otomatik gelir, isterseniz manuel değiştirin.</div>
+    <div class="wsec">
+      <div class="wtitle">🪵 Ahşap Plakalar / Parçalar</div>
+      <div class="ah-hdr">
+        <label>Hammadde Seç</label>
+        <label>Açıklama</label>
+        <label>En (cm)</label>
+        <label>Boy (cm)</label>
+        <label>Kal. (cm)</label>
+        <label>cm³ Fiyatı (₺)</label>
+        <label>Maliyet</label>
+        <span></span>
+      </div>
+      <div id="ahsapList"></div>
+      <button class="btn bwood" onclick="addAhsap()">🪵 Satır Ekle</button>
+      <div class="wbar"><span class="wl">Toplam Ahşap Maliyeti</span><span class="wv" id="ahsapTotal">₺ 0,00</span></div>
+    </div>
+
+    <div class="slbl"><div class="ico ib" style="width:24px;height:24px;font-size:12px;">🛍️</div>Dışarıdan Satın Alınan Ürünler</div>
+    <div class="ibar">Masa ayağı, vida, menteşe, tutamaç, boya gibi hazır satın aldığınız ürünler.</div>
+    <div class="gr-hdr"><label>Ürün Adı</label><label>Maliyet (₺)</label><span></span></div>
+    <div id="disList"></div>
+    <button class="btn badd" onclick="addDis()">➕ Ürün Ekle</button>
+  </div>
+
+  <div class="card">
+    <div class="ctitle"><div class="ico iy">💰</div>İşçilik & Diğer Maliyetler</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="fg">
+        <label>🔨 İşçilik / Emek (₺)</label>
+        <input type="text" id="iscilik" placeholder="0,00" inputmode="decimal" autocomplete="off" oninput="binAyiriciInput(this)">
+      </div>
+      <div class="fg">
+        <label>🏪 Sabit Gider Payı (₺) <button class="bauto" onclick="sabitOto()">🔄 Otomatik Al</button></label>
+        <input type="text" id="sabitPay" placeholder="0,00" inputmode="decimal" autocomplete="off">
+      </div>
+      <div class="fg">
+        <label>🔪 Plaka Dilimleme Payı</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;">
+          <div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Dilimleme Ücreti (₺)</div>
+            <input type="text" id="dilimUcret" placeholder="0,00" inputmode="decimal" autocomplete="off" oninput="binAyiriciInput(this);calcDilimPay()">
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Parça Adedi</div>
+            <input type="number" id="dilimAdet" placeholder="Örn: 8" min="1" step="1" oninput="calcDilimPay()">
+          </div>
+          <div style="text-align:center;padding-top:16px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:2px;">= Pay</div>
+            <div id="dilimPayGoster" style="font-family:'Libre Baskerville',serif;font-weight:800;font-size:15px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;">—</div>
+          </div>
+        </div>
+        <input type="hidden" id="dilimPay">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle"><div class="ico ig">💚</div>Net Kâr Hedefi</div>
+    <div class="nkbox">
+      <div class="nklbl">💚 Bu üründen istediğim net kâr</div>
+      <div class="nkwrap"><span class="tls">₺</span><input type="text" id="netKar" placeholder="500" inputmode="decimal" autocomplete="off" value="500" oninput="binAyiriciInput(this)"></div>
+    </div>
+  </div>
+
+  <!-- PLATFORMLAR - manuel komisyon -->
+  <div class="card">
+    <div class="ctitle"><div class="ico ib">🛒</div>Satış Platformları</div>
+    <div class="ibar">
+      💡 Komisyon ve KDV oranları <strong>kategoriye göre değişir</strong> — kendi ürün kategorinize ait oranları girin.<br>
+      Etsy için USD dönüşüm yapılır. Her platform için kargo bedelini platform satırına girin.
+    </div>
+    <div class="kur-row">
+      <label>🌿 Etsy – USD/TL Kuru</label>
+      <input type="number" id="etsy_kur" placeholder="38.50" min="1" step="0.01" value="38.50" oninput="savePlatData()">
+      <span id="etsy_kur_lbl" style="font-size:12px;color:var(--muted)">Anlık kur yükleniyor...</span>
+    </div>
+    <div class="plat-hdr">
+      <span></span>
+      <label>Platform Adı</label>
+      <label>Komisyon %</label>
+      <label>KDV %</label>
+      <label>Kargo ₺</label>
+      <span></span>
+    </div>
+    <div id="platList"></div>
+    <button class="btn badd" onclick="addPlat()">➕ Platform Ekle</button>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button class="btn bprim" style="flex:1;min-width:200px;" onclick="hesapla()">✨ Fiyatı Hesapla</button>
+    <button class="btn bkars" id="karsBtn" style="padding:13px 20px;font-size:14px;border-radius:11px;" onclick="karsToggle()" title="Tüm kayıtlı hammaddelerle karşılaştır">⚖️ Hammadde Karşılaştır</button>
+  </div>
+  <div id="karsWrap" class="kars-wrap" style="display:none;"></div>
+
+  <div id="sonuclar" style="display:none;margin-top:20px;">
+    <div class="card">
+      <div class="ctitle"><div class="ico ig">📊</div>Hesaplama Sonuçları</div>
+      <div id="sonucIc"></div>
+      <hr class="divider">
+      <div id="kaydet-normal" style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn bsave" onclick="kaydet()">💾 Yeni Olarak Kaydet</button>
+      </div>
+      <div id="kaydet-duzenle" style="display:none;gap:10px;flex-wrap:wrap;">
+        <button class="btn" style="background:rgba(107,203,119,.15);color:var(--a3);border:1px solid rgba(107,203,119,.35);padding:9px 20px;font-size:13px;font-weight:600;" onclick="guncelle()">✅ Güncelle</button>
+        <button class="btn bsave" onclick="farklıKaydet()">📋 Farklı Kaydet</button>
+        <button class="btn" style="background:rgba(255,107,107,.1);color:var(--a1);border:1px solid rgba(255,107,107,.25);padding:9px 16px;font-size:13px;" onclick="editIptal()">✕ İptal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ HAMMADDE ═══════════ -->
+<div id="tab-hammadde" class="tab">
+  <div class="card">
+    <div class="ctitle"><div class="ico iw">🪵</div>Hammadde Plakaları</div>
+    <div class="ibar">
+      💡 Satın aldığınız ahşap plakanın ölçüsünü ve toplam fiyatını girin → <strong>cm³ fiyatı otomatik hesaplanır</strong>.<br>
+      Hesapla sekmesinde her ahşap satırı için bu hammaddelerden birini seçin.
+    </div>
+    <div class="hm-hdr">
+      <label>Hammadde Adı / Cinsi</label>
+      <label>En (cm)</label>
+      <label>Boy (cm)</label>
+      <label>Kalınlık (cm)</label>
+      <label>Alış Fiyatı (₺)</label>
+      <label>cm³ Fiyatı</label>
+      <span></span>
+    </div>
+    <div id="hmList"></div>
+    <button class="btn bwood" onclick="addHammadde()">🪵 Hammadde Ekle</button>
+    <div class="wbar" style="margin-top:14px;">
+      <span class="wl">Kayıtlı hammadde sayısı</span>
+      <span class="wv" id="hmCount">0 adet</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SABİT GİDERLER ═══════════ -->
+<div id="tab-sabit" class="tab">
+  <div class="card">
+    <div class="ctitle"><div class="ico ib">⚙️</div>Genel Giderler</div>
+    <div class="ibar">Kira, elektrik, internet gibi aylık sabit giderleri girin. <strong>🔄 Otomatik Al</strong> ile ürün başına payı hesapla sekmesine aktarın.</div>
+    <div class="gr-hdr"><label>Gider Adı</label><label>Aylık Tutar (₺)</label><span></span></div>
+    <div id="sabitList"></div>
+    <button class="btn badd" onclick="addSabit()">➕ Gider Ekle</button>
+    <div class="ssum"><span class="sl">Toplam Aylık Sabit Gider</span><span class="sv" id="sabitToplam">₺ 0,00</span></div>
+  </div>
+  <div class="card">
+    <div class="ctitle"><div class="ico iy">🧮</div>Ürün Başına Gider Payı</div>
+    <div class="g2">
+      <div class="fg"><label>Aylık Üretim Adedi</label><input type="number" id="aylikUretim" placeholder="Örn: 20" min="1" oninput="calcSabitPay()"></div>
+      <div><label>Her Ürüne Düşen</label><div class="wbar" style="margin-top:0;"><span class="wl">Ürün başına</span><span class="wv" id="urunBasina" style="color:var(--a4);">—</span></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ ÜRÜNLERİM ═══════════ -->
+<div id="tab-urunler" class="tab">
+  <div class="card">
+    <div class="ctitle"><div class="ico ip">📦</div>Kayıtlı Ürünler</div>
+    <div id="savedList"></div>
+  </div>
+</div>
+
+</div>
+
+<!-- ÖZET POPUP -->
+<div id="urunPopup" class="urun-popup" style="display:none;">
+  <div class="up-hdr" id="popupHdr">
+    <div class="up-hdr-inner">
+      <div class="up-drag">⠿⠿</div>
+      <div class="up-ad" id="popupAd"></div>
+      <div class="up-tarih" id="popupTarih"></div>
+    </div>
+    <button class="up-close" onclick="popupKapat()">×</button>
+  </div>
+  <div class="up-body">
+    <div class="up-row" id="popupHmRow" style="display:none;">
+      <span class="up-lbl">🪵 Hammadde</span>
+      <span class="up-val purple" id="popupHammadde"></span>
+    </div>
+    <div class="up-row">
+      <span class="up-lbl">Ham Maliyet</span>
+      <span class="up-val" id="popupMaliyet"></span>
+    </div>
+    <div class="up-row">
+      <span class="up-lbl">Hedef Net Kâr</span>
+      <span class="up-val green" id="popupNetkar"></span>
+    </div>
+    <div class="up-sec">Satış Fiyatları</div>
+    <div class="up-plat-list" id="popupPlatlar"></div>
+  </div>
+</div>
+
+<script>
+// ════════════ VERİ ════════════
+// Platform listesi artık kullanıcı tarafından yönetiliyor
+// Başlangıç platformları (komisyon elle girilecek)
+const BASLANGIC_PLAT = [
+  {emoji:'🟠', name:'Trendyol',    komisyon:''},
+  {emoji:'🟡', name:'Hepsiburada', komisyon:''},
+  {emoji:'🔵', name:'n11',         komisyon:''},
+  {emoji:'📦', name:'Amazon TR',   komisyon:''},
+  {emoji:'🌿', name:'Etsy',        komisyon:''},
+  {emoji:'🟣', name:'Shopier',     komisyon:''},
+];
+
+let savedProds  = JSON.parse(localStorage.getItem('fhp_urunler')  || '[]');
+let sabitList   = JSON.parse(localStorage.getItem('fhp_sabit')    || '[]');
+let hammaddeler = JSON.parse(localStorage.getItem('fhp_hammadde') || '[]');
+let platData    = JSON.parse(localStorage.getItem('fhp_plat')     || 'null');
+let lastResult  = null;
+let editingIdx  = null;
+let cnt = {ah:0, dis:0, sabit:0, hm:0, plat:0};
+
+// ════════════ GOOGLE SHEETS SYNC ════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwoljMq2NJUv8EWRUHil_BvnTceNOsXlLM9Mih8_jFREQRe_71U5MSyaa8a7jXMvOXw/exec';
+let _syncTimer = null;
+let _syncQueue = {};
+let _syncing   = false;
+
+function syncDurum(tip, mesaj) {
+  const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLbl');
+  if(!dot || !lbl) return;
+  const renkler = {ok:'#6bcb77', hata:'#ff6b6b', bekle:'#ffd93d', mesgul:'#4d96ff'};
+  dot.style.background = renkler[tip] || 'var(--muted)';
+  lbl.textContent = mesaj;
+}
+
+function syncYaz(key, value) {
+  localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+  _syncQueue[key] = value;
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(syncGonder, 1500);
+  syncDurum('bekle', 'Kaydediliyor...');
+}
+
+async function syncGonder() { syncDurum("ok","💾 Yerel"); }
+
+async function syncYukle() { syncDurum("ok","💾 Yerel"); }
+
+// ════════════ INIT ════════════
+
+// ════════════ ÜRÜN FOTOĞRAFI ════════════
+let currentFotoB64 = null;
+
+function fotoDragOver(e){
+  e.preventDefault();
+  document.getElementById('fotoDrop').classList.add('drag-active');
+}
+function fotoDragLeave(e){
+  document.getElementById('fotoDrop').classList.remove('drag-active');
+}
+function fotoDrop(e){
+  e.preventDefault();
+  document.getElementById('fotoDrop').classList.remove('drag-active');
+  const file = e.dataTransfer.files[0];
+  if(file && file.type.startsWith('image/')) fotoOku(file);
+}
+function fotoSecildi(input){
+  if(input.files[0]) fotoOku(input.files[0]);
+}
+function fotoOku(file){
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentFotoB64 = e.target.result;
+    fotoGoster(currentFotoB64);
+  };
+  reader.readAsDataURL(file);
+}
+function fotoGoster(src){
+  const preview = document.getElementById('fotoPreview');
+  const ph      = document.getElementById('fotoPlaceholder');
+  const silBtn  = document.getElementById('fotoSilBtn');
+  if(src){
+    preview.src = src; preview.style.display='block';
+    ph.style.display='none'; silBtn.style.display='block';
+  } else {
+    preview.src=''; preview.style.display='none';
+    ph.style.display='flex'; silBtn.style.display='none';
+  }
+}
+function fotoSil(e){
+  e.stopPropagation();
+  currentFotoB64 = null;
+  fotoGoster(null);
+  document.getElementById('fotoInput').value='';
+}
+function fotoYukle(b64){
+  currentFotoB64 = b64||null;
+  fotoGoster(currentFotoB64);
+}
+
+function init(){
+  addAhsap();
+  addDis();
+  renderSabit();
+  renderHammadde();
+  renderPlatList();
+  renderSaved();
+  const savedKur = localStorage.getItem('fhp_etsy_kur');
+  if(savedKur){ const el=document.getElementById('etsy_kur'); if(el) el.value=savedKur; }
+  fetchUsdKur();
+  syncYukle();
+}
+
+async function fetchUsdKur(){
+  const el = document.getElementById('etsy_kur');
+  const lbl = document.getElementById('etsy_kur_lbl');
+  if(!el) return;
+  if(lbl){ lbl.textContent = 'Kur yükleniyor...'; lbl.style.color='var(--muted)'; }
+
+  // 3 farklı API dene
+  const kaynaklar = [
+    async () => {
+      const r = await fetch('https://open.er-api.com/v6/latest/USD');
+      const d = await r.json();
+      if(d.result === 'success' && d.rates && d.rates.TRY > 1) return d.rates.TRY;
+      throw new Error('no TRY');
+    },
+    async () => {
+      const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+      const d = await r.json();
+      if(d.rates && d.rates.TRY > 1) return d.rates.TRY;
+      throw new Error('no TRY');
+    },
+    async () => {
+      // Alternatif: TRY bazlı
+      const r = await fetch('https://open.er-api.com/v6/latest/TRY');
+      const d = await r.json();
+      if(d.result === 'success' && d.rates && d.rates.USD > 0) return 1 / d.rates.USD;
+      throw new Error('no USD');
+    }
+  ];
+
+  for(const kaynak of kaynaklar){
+    try {
+      const kur = await kaynak();
+      if(kur && kur > 1){
+        el.value = kur.toFixed(2);
+        syncYaz('fhp_etsy_kur', kur.toFixed(2));
+        if(lbl){
+          const now = new Date();
+          lbl.textContent = `✓ ${kur.toFixed(2)} ₺/$ — ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')} güncellendi`;
+          lbl.style.color = 'var(--a3)';
+        }
+        return;
+      }
+    } catch(e){ /* sonraki kaynağı dene */ }
+  }
+  // Hepsi başarısız
+  if(lbl){ lbl.textContent = 'Otomatik kur alınamadı — manuel girin'; lbl.style.color='var(--a1)'; }
+}
+
+// ════════════ TABS ════════════
+function sw(tab, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+  if(tab==='urunler'){
+    renderSaved();
+    if(checkPendingUpdates()) showUpdateBanner();
+  }
+  if(tab==='sabit')     { renderSabit(); calcSabitPay(); }
+  if(tab==='hammadde')  renderHammadde();
+}
+
+// ════════════ PLATFORMLAR (manuel komisyon) ════════════
+function renderPlatList(){
+  const container = document.getElementById('platList');
+  container.innerHTML = '';
+  cnt.plat = 0;
+  const data = platData || BASLANGIC_PLAT;
+  data.forEach(p => addPlat(p.emoji, p.name, p.komisyon, p.kdv !== undefined ? p.kdv : 20, p.kargo||'0'));
+}
+
+function addPlat(emoji='🛒', name='', komisyon='', kdv='20', kargo='0'){
+  cnt.plat++;
+  const id = 'plat_'+cnt.plat;
+  const div = document.createElement('div');
+  div.className = 'plat-row'; div.id = id;
+  div.innerHTML = `
+    <div class="plat-emoji">${emoji}</div>
+    <input type="text" placeholder="Platform adı" value="${name}" oninput="savePlatData()">
+    <div class="plat-kom-cell">
+      <input type="number" placeholder="0" min="0" max="100" step="0.1" value="${komisyon}" oninput="savePlatData()">
+    </div>
+    <div class="plat-kdv-cell">
+      <input type="number" placeholder="20" min="0" max="100" step="1" value="${kdv}" oninput="savePlatData()">
+    </div>
+    <div class="plat-kargo-cell">
+      <input type="number" placeholder="0" min="0" step="0.01" value="${kargo}" oninput="savePlatData()">
+    </div>
+    <button class="bico" onclick="removeRow('${id}'); savePlatData()">×</button>
+  `;
+  document.getElementById('platList').appendChild(div);
+}
+
+function savePlatData(){
+  platData = [];
+  document.querySelectorAll('#platList .plat-row').forEach(row=>{
+    const inputs = row.querySelectorAll('input');
+    platData.push({
+      emoji: row.querySelector('.plat-emoji').textContent,
+      name: inputs[0].value,
+      komisyon: inputs[1].value,
+      kdv: inputs[2].value,
+      kargo: inputs[3].value
+    });
+  });
+  const kurEl = document.getElementById('etsy_kur');
+  if(kurEl) syncYaz('fhp_etsy_kur', kurEl.value);
+  syncYaz('fhp_plat', platData);
+}
+
+function getPlatforms(){
+  const rows = document.querySelectorAll('#platList .plat-row');
+  const etsy_kur = parseFloat(document.getElementById('etsy_kur')?.value) || 38.5;
+  const result = [];
+  rows.forEach(row=>{
+    const inputs = row.querySelectorAll('input');
+    const name = inputs[0].value.trim();
+    const kom  = parseFloat(inputs[1].value) || 0;
+    const kdv  = parseFloat(inputs[2].value);
+    const kdvOrani = isNaN(kdv) ? 0.20 : kdv/100;
+    if(name){
+      const isEtsy = name.toLowerCase().includes('etsy');
+      result.push({
+        emoji: row.querySelector('.plat-emoji').textContent,
+        name, komisyon: kom, kdvOrani,
+        kargo: parseFloat(inputs[3].value)||0,
+        isEtsy, etsy_kur
+      });
+    }
+  });
+  return result;
+}
+
+// ════════════ HAMMADDE ════════════
+function addHammadde(ad='', en='', boy='', kal='', fiyat=''){
+  cnt.hm++;
+  const id = 'hm_'+cnt.hm;
+  const div = document.createElement('div');
+  div.className = 'hm-row'; div.id = id;
+  div.innerHTML = `
+    <input type="text" placeholder="Örn: Meşe 1.8cm, Kayın 2cm..." value="${ad}" oninput="saveHammadde()">
+    <input type="number" placeholder="121" min="0" step="0.1" value="${en}" oninput="updateHmRow('${id}')">
+    <input type="number" placeholder="350" min="0" step="0.1" value="${boy}" oninput="updateHmRow('${id}')">
+    <input type="number" placeholder="1.8" min="0" step="0.01" value="${kal}" oninput="updateHmRow('${id}')">
+    <input type="text" placeholder="5.000" inputmode="decimal" autocomplete="off" value="${fmtInput(fiyat)}" oninput="binAyiriciInput(this);updateHmRow('${id}')">
+    <div class="hm-badge" id="badge_${id}">—</div>
+    <button class="bico" onclick="removeRow('${id}'); saveHammadde(); refreshAhsapSelectors()">×</button>
+  `;
+  document.getElementById('hmList').appendChild(div);
+  if(en && boy && kal && fiyat) updateHmRow(id);
+  renderHmCount();
+}
+
+function updateHmRow(id){
+  const row = document.getElementById(id); if(!row) return;
+  const inp = row.querySelectorAll('input');
+  const en=parseFloat(inp[1].value)||0, boy=parseFloat(inp[2].value)||0;
+  const kal=parseTutar(inp[3].value), fiy=parseFloat(inp[4].value)||0;
+  const badge = document.getElementById('badge_'+id);
+  if(en>0 && boy>0 && kal>0 && fiy>0){
+    const cm3f = fiy/(en*boy*kal);
+    badge.textContent = fmt6(cm3f)+' ₺/cm³';
+    badge.style.cssText='background:rgba(107,203,119,.1);border-color:rgba(107,203,119,.3);color:var(--a3);';
+  } else {
+    badge.textContent='—';
+    badge.style.cssText='';
+  }
+  saveHammadde();
+  refreshAhsapSelectors();
+}
+
+
+function saveHammadde(){
+  hammaddeler = [];
+  document.querySelectorAll('#hmList .hm-row').forEach(row=>{
+    const inp = row.querySelectorAll('input');
+    const en=parseFloat(inp[1].value)||0, boy=parseFloat(inp[2].value)||0;
+    const kal=parseTutar(inp[3].value), fiy=parseFloat(inp[4].value)||0;
+    const cm3f = (en>0&&boy>0&&kal>0&&fiy>0) ? fiy/(en*boy*kal) : 0;
+    hammaddeler.push({ad:inp[0].value, en:inp[1].value, boy:inp[2].value, kal:inp[3].value, fiyat:inp[4].value, cm3f});
+  });
+  syncYaz('fhp_hammadde', hammaddeler);
+  checkPendingUpdates();
+}
+
+function checkPendingUpdates(){
+  // Kayıtlı ürünlerde güncel olmayan hammadde fiyatı var mı kontrol et
+  let hasPending = false;
+  savedProds.forEach(u => {
+    if(!u.snapshot || !u.snapshot.ahsaplar) return;
+    u.snapshot.ahsaplar.forEach(a => {
+      if(a.hmIdx !== '' && a.hmIdx !== undefined){
+        const hm = hammaddeler[parseInt(a.hmIdx)];
+        if(hm && hm.cm3f > 0){
+          const guncelCm3f = hm.cm3f.toFixed(6);
+          if(a.cm3f !== guncelCm3f) hasPending = true;
+        }
+      }
+    });
+  });
+  // Ürünlerim sekmesi butonuna güncelleme ikonu ekle/kaldır
+  const urunlerBtn = document.querySelector('.tb[onclick*="urunler"]');
+  if(urunlerBtn){
+    if(hasPending){
+      if(!urunlerBtn.textContent.includes('🔴')) urunlerBtn.textContent = '📦 Ürünlerim 🔴';
+    } else {
+      urunlerBtn.textContent = '📦 Ürünlerim';
+    }
+  }
+  // Ürünlerim sekmesi açıksa banner göster
+  if(hasPending && document.getElementById('tab-urunler').classList.contains('active')){
+    showUpdateBanner();
+  }
+  return hasPending;
+}
+
+function showUpdateBanner(){
+  let banner = document.getElementById('update-banner');
+  if(!banner){
+    banner = document.createElement('div');
+    banner.id = 'update-banner';
+    banner.style.cssText = 'background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:11px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;';
+    banner.innerHTML = `
+      <span style="font-size:13px;color:var(--a1);">🔴 Maliyet verileri değişti — etkilenen ürün fiyatları güncellenmedi.</span>
+      <button class="btn" style="background:rgba(255,107,107,.2);color:var(--a1);border:1px solid rgba(255,107,107,.3);padding:7px 16px;font-size:13px;" onclick="recalcSavedProds()">🔄 Fiyatları Güncelle</button>
+    `;
+    const savedList = document.getElementById('savedList');
+    if(savedList && savedList.parentNode) savedList.parentNode.insertBefore(banner, savedList);
+  }
+  banner.style.display = 'flex';
+}
+
+function hideUpdateBanner(){
+  const banner = document.getElementById('update-banner');
+  if(banner) banner.style.display = 'none';
+}
+
+function recalcSavedProds(){
+  // Kayıtlı ürünlerdeki snapshot'larda hammadde indexi varsa cm3f'i güncelle, sonra fiyatları yeniden hesapla
+  let changed = false;
+  savedProds.forEach((u, ui)=>{
+    const snap = u.snapshot;
+    if(!snap || !snap.ahsaplar) return;
+    let snapChanged = false;
+    snap.ahsaplar.forEach(a=>{
+      if(a.hmIdx !== '' && a.hmIdx !== undefined){
+        const hm = hammaddeler[parseInt(a.hmIdx)];
+        if(hm && hm.cm3f > 0){
+          const yeniCm3f = hm.cm3f.toFixed(6);
+          if(a.cm3f !== yeniCm3f){ a.cm3f = yeniCm3f; snapChanged = true; }
+        }
+      }
+    });
+    if(!snapChanged) return;
+    changed = true;
+    // Maliyetleri yeniden hesapla
+    let ahsapMal = 0;
+    snap.ahsaplar.forEach(a=>{
+      const en=parseFloat(a.en)||0, boy=parseFloat(a.boy)||0;
+      const kal=parseFloat(a.kal)||0, cm3f=parseFloat(a.cm3f)||0;
+      ahsapMal += en*boy*kal*cm3f;
+    });
+    let disMal = 0;
+    (snap.disler||[]).forEach(d=>{ disMal += parseFloat(d.fiyat)||0; });
+    const iscilik  = parseFloat(snap.iscilik)||0;
+    const sabitPay = parseFloat(snap.sabitPay)||0;
+    const dilimPay = parseFloat(snap.dilimPay)||0;
+    const hamMal   = ahsapMal + disMal + iscilik + sabitPay + dilimPay;
+    const netKar   = parseFloat(snap.netKar)||0;
+    u.maliyet = hamMal;
+    // Platform fiyatlarını yeniden hesapla
+    const platlar = snap.platlar || [];
+    u.platforms = platlar.filter(p=>p.name).map(p=>{
+      const koR = (parseFloat(p.komisyon)||0)/100;
+      const kdvOrani = (parseFloat(p.kdv)||0)/100;
+      const kg = parseFloat(p.kargo)||0;
+      if(koR >= 1) return {name:p.name, fiyat:0, net:0};
+      const payda = kdvOrani>0 ? (1-koR-kdvOrani/(1+kdvOrani)) : (1-koR);
+      const sf    = (hamMal+kg+netKar)/payda;
+      const kom   = sf*koR;
+      const kdvT  = kdvOrani>0 ? sf*kdvOrani/(1+kdvOrani) : 0;
+      const netK  = sf-kom-kg-hamMal-kdvT;
+      return {name:p.name, fiyat:sf, net:netK};
+    });
+  });
+  if(changed){
+    syncYaz('fhp_urunler', savedProds);
+    // Tab butonunu güncelle
+    const urunlerBtn = document.querySelector('.tb[onclick*="urunler"]');
+    if(urunlerBtn) urunlerBtn.textContent = '📦 Ürünlerim';
+    hideUpdateBanner();
+    // Ürünlerim sekmesi açıksa yenile
+    if(document.getElementById('tab-urunler').classList.contains('active')) renderSaved();
+  }
+}
+
+function renderHammadde(){
+  document.getElementById('hmList').innerHTML=''; cnt.hm=0;
+  hammaddeler.forEach(h=>addHammadde(h.ad, h.en, h.boy, h.kal, h.fiyat));
+  if(hammaddeler.length===0) addHammadde();
+  renderHmCount();
+}
+
+function renderHmCount(){
+  const n = document.querySelectorAll('#hmList .hm-row').length;
+  const el = document.getElementById('hmCount');
+  if(el) el.textContent = n+' adet';
+}
+
+// Tüm ahşap satırlarındaki hammadde seçicileri güncelle
+function refreshAhsapSelectors(){
+  document.querySelectorAll('#ahsapList .ah-row').forEach(row=>{
+    const sel = row.querySelector('select');
+    if(!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = buildHmOptions();
+    // Önceki seçimi koru (isim bazlı)
+    const opts = sel.querySelectorAll('option');
+    let found = false;
+    opts.forEach(o=>{ if(o.value===prev){ sel.value=prev; found=true; }});
+    if(!found) sel.value='';
+  });
+}
+
+function buildHmOptions(){
+  let html = '<option value="">— Manuel gir —</option>';
+  hammaddeler.forEach((h,i)=>{
+    if(h.ad && h.cm3f>0){
+      html += `<option value="${i}">${h.ad} (${fmt6(h.cm3f)} ₺/cm³)</option>`;
+    }
+  });
+  return html;
+}
+
+// ════════════ AHŞAP SATIRLARI ════════════
+function addAhsap(){
+  cnt.ah++;
+  const id = 'ah_'+cnt.ah;
+  const div = document.createElement('div');
+  div.className = 'ah-row'; div.id = id;
+  div.innerHTML = `
+    <select onchange="ahsapHammaddeSecildi('${id}')">
+      ${buildHmOptions()}
+    </select>
+    <input type="text" placeholder="tabla, kenar...">
+    <input type="number" placeholder="50" min="0" step="0.1" oninput="calcAhsapRow('${id}')">
+    <input type="number" placeholder="50" min="0" step="0.1" oninput="calcAhsapRow('${id}')">
+    <input type="number" placeholder="1.8" min="0" step="0.01" oninput="calcAhsapRow('${id}')">
+    <input type="number" placeholder="cm³ fiyatı" min="0" step="0.000001" oninput="calcAhsapRow('${id}')">
+    <div class="ah-maliyet" id="ahmal_${id}">₺ 0,00</div>
+    <button class="bico" onclick="removeRow('${id}'); calcAhsap()">×</button>
+  `;
+  document.getElementById('ahsapList').appendChild(div);
+}
+
+function ahsapHammaddeSecildi(id){
+  const row = document.getElementById(id); if(!row) return;
+  const sel = row.querySelector('select');
+  const inp = row.querySelectorAll('input');
+  const kalinlikInp = inp[3]; // 4. input = kalınlık
+  const cm3inp      = inp[4]; // 5. input = cm³ fiyatı
+  if(sel.value === ''){
+    cm3inp.value = '';
+    cm3inp.style.borderColor = '';
+    cm3inp.placeholder = 'cm³ fiyatı';
+    kalinlikInp.style.borderColor = '';
+  } else {
+    const h = hammaddeler[parseInt(sel.value)];
+    if(h){
+      if(h.kal && parseFloat(h.kal) > 0){
+        kalinlikInp.value = parseFloat(h.kal);
+        kalinlikInp.style.borderColor = 'rgba(251,191,36,.5)';
+        kalinlikInp.title = 'Hammaddeden otomatik alındı';
+      }
+      if(h.cm3f > 0){
+        cm3inp.value = h.cm3f.toFixed(6);
+        cm3inp.style.borderColor = 'rgba(107,203,119,.5)';
+        cm3inp.placeholder = '';
+      }
+    }
+  }
+  calcAhsapRow(id);
+}
+
+function calcAhsapRow(id){
+  const row = document.getElementById(id); if(!row) return;
+  const inp = row.querySelectorAll('input');
+  // inp[0]=açıklama, inp[1]=en, inp[2]=boy, inp[3]=kal, inp[4]=cm3f
+  const en=parseFloat(inp[1].value)||0, boy=parseFloat(inp[2].value)||0;
+  const kal=parseTutar(inp[3].value), cm3f=parseFloat(inp[4].value)||0;
+  const mal = en*boy*kal*cm3f;
+  const badge = document.getElementById('ahmal_'+id);
+  if(badge) badge.textContent = '₺ '+fmt(mal);
+  calcAhsap();
+}
+
+function calcAhsap(){
+  let total=0;
+  document.querySelectorAll('#ahsapList .ah-row').forEach(row=>{
+    const inp = row.querySelectorAll('input');
+    const en=parseFloat(inp[1].value)||0, boy=parseFloat(inp[2].value)||0;
+    const kal=parseTutar(inp[3].value), cm3f=parseFloat(inp[4].value)||0;
+    total += en*boy*kal*cm3f;
+  });
+  document.getElementById('ahsapTotal').textContent = '₺ '+fmt(total);
+  return total;
+}
+
+// ════════════ DIŞARIDAN ════════════
+function addDis(){
+  cnt.dis++;
+  const id='dis_'+cnt.dis;
+  const div=document.createElement('div'); div.className='gr'; div.id=id;
+  div.innerHTML=`
+    <input type="text" placeholder="Masa ayağı, vida, boya...">
+    <input type="number" placeholder="0.00" min="0" step="0.01">
+    <button class="bico" onclick="removeRow('${id}')">×</button>`;
+  document.getElementById('disList').appendChild(div);
+}
+function getDisToplam(){
+  let t=0;
+  document.querySelectorAll('#disList .gr').forEach(r=>{t+=parseFloat(r.querySelectorAll('input')[1].value)||0;});
+  return t;
+}
+
+// ════════════ SABİT GİDER ════════════
+function addSabit(ad='',tutar=''){
+  cnt.sabit++;
+  const id='sabit_'+cnt.sabit;
+  const div=document.createElement('div'); div.className='gr'; div.id=id;
+  div.innerHTML=`
+    <input type="text" placeholder="Kira, elektrik..." value="${ad}" oninput="saveSabit()">
+    <input type="text" placeholder="0,00" inputmode="decimal" autocomplete="off" value="${fmtInput(tutar)}" oninput="binAyiriciInput(this);saveSabit();updSabitToplam();calcSabitPay()">
+    <button class="bico" onclick="removeRow('${id}');saveSabit();updSabitToplam();calcSabitPay()">×</button>`;
+  document.getElementById('sabitList').appendChild(div);
+}
+function renderSabit(){
+  document.getElementById('sabitList').innerHTML=''; cnt.sabit=0;
+  sabitList.forEach(g=>addSabit(g.ad,g.tutar));
+  if(sabitList.length===0) addSabit();
+  updSabitToplam();
+}
+function saveSabit(){
+  sabitList=[];
+  document.querySelectorAll('#sabitList .gr').forEach(r=>{
+    const inp=r.querySelectorAll('input');
+    sabitList.push({ad:inp[0].value, tutar:inp[1].value});
+  });
+  syncYaz('fhp_sabit', sabitList);
+}
+
+function getSabitToplam(){let t=0;document.querySelectorAll('#sabitList .gr').forEach(r=>{t+=parseFloat(r.querySelectorAll('input')[1].value)||0;});return t;}
+function updSabitToplam(){document.getElementById('sabitToplam').textContent='₺ '+fmt(getSabitToplam());}
+
+// ════════════ DİLİMLEME ════════════
+function calcDilimPay(){
+  const ucret = parseTutar(document.getElementById('dilimUcret')?.value);
+  const adet  = parseInt(document.getElementById('dilimAdet')?.value)||1;
+  const goster = document.getElementById('dilimPayGoster');
+  const hidden = document.getElementById('dilimPay');
+  if(ucret > 0 && adet > 0){
+    const pay = ucret / adet;
+    if(goster) goster.textContent = fmt(pay)+' ₺';
+    if(hidden)  hidden.value = pay.toFixed(2);
+  } else {
+    if(goster) goster.textContent = '—';
+    if(hidden)  hidden.value = '';
+  }
+}
+function calcSabitPay(){
+  const u=parseInt(document.getElementById('aylikUretim')?.value)||0;
+  const el=document.getElementById('urunBasina'); if(!el) return;
+  const t=getSabitToplam();
+  el.textContent=(u>0&&t>0)?'₺ '+fmt(t/u):'—';
+}
+function sabitOto(){
+  const t=getSabitToplam(), u=parseInt(document.getElementById('aylikUretim')?.value)||0;
+  if(t===0){alert('Önce "Genel Giderler" sekmesini doldurun.');return;}
+  if(u===0){alert('"Genel Giderler" sekmesinde aylık üretim adetini girin.');return;}
+  document.getElementById('sabitPay').value=(t/u).toFixed(2);
+}
+
+// ════════════ DİLİMLEME ════════════
+
+
+
+
+
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 20px;font-size:13px;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:9999;transition:opacity .3s;pointer-events:none;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>{ t.style.opacity='0'; }, 3000);
+}
+
+
+// ════════════ YARDIMCI ════════════
+function removeRow(id){const el=document.getElementById(id);if(el)el.remove();}
+
+// ── BİN AYIRICI ──
+function fmtInput(val) {
+  if(!val && val!==0) return '';
+  const s = parseFloat(val).toFixed(2);
+  const [tam, ondalik] = s.split('.');
+  return tam.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + ondalik;
+}
+function parseTutar(str) {
+  if(!str) return 0;
+  return parseFloat(str.replace(/\./g,'').replace(',','.')) || 0;
+}
+function binAyiriciInput(el) {
+  let v = el.value.replace(/[^0-9,]/g, '');
+  const parts = v.split(',');
+  let tam = parts[0];
+  let ondalik = parts.length > 1 ? parts[1].slice(0,2) : null;
+  tam = tam.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  el.value = ondalik !== null ? tam + ',' + ondalik : tam;
+}
+function binAyiriciVal(el) {
+  // Sadece tam sayı (adet vb için)
+  let v = el.value.replace(/[^0-9]/g, '');
+  el.value = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+function fmt(n){return n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmt6(n){
+  if(n>=1) return n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:4});
+  return n.toLocaleString('tr-TR',{minimumFractionDigits:4,maximumFractionDigits:6});
+}
+
+
+// ════════════ HAMMADDe KARŞILAŞTIR ════════════
+function karsToggle(){
+  const wrap = document.getElementById('karsWrap');
+  const btn  = document.getElementById('karsBtn');
+  if(wrap.style.display === 'none' || wrap.innerHTML === ''){
+    karsılastir();
+    btn.textContent = '⚖️ Karşılaştırmayı Gizle';
+    btn.style.background = 'rgba(199,125,255,.25)';
+  } else {
+    wrap.style.display = 'none';
+    btn.textContent = '⚖️ Hammadde Karşılaştır';
+    btn.style.background = '';
+  }
+}
+
+function karsılastir(){
+  // Sadece geçerli hammaddeleri al
+  const gecerliHm = hammaddeler.filter(h=>h.ad && h.cm3f>0);
+  if(gecerliHm.length < 2){
+    alert('Karşılaştırma için Hammadde sekmesinde en az 2 hammadde tanımlı olmalı!');
+    return;
+  }
+
+  const urunAdi   = document.getElementById('urunAdi').value.trim()||'İsimsiz Ürün';
+  const disMal    = getDisToplam();
+  const iscilik   = parseTutar(document.getElementById('iscilik').value);
+  const dilimPay  = parseFloat(document.getElementById('dilimPay')?.value)||0;
+  const sabitPay  = parseTutar(document.getElementById('sabitPay').value);
+  const netKarHdf = parseTutar(document.getElementById('netKar').value);
+  const platformlar = getPlatforms();
+  if(platformlar.length===0){alert('Lütfen en az bir platform ekleyin!');return;}
+
+  // Her ahşap satırının ölçülerini al (hammadde seçiminden bağımsız)
+  const satirOlculeri = [];
+  document.querySelectorAll('#ahsapList .ah-row').forEach(row=>{
+    const inp = row.querySelectorAll('input');
+    const en=parseFloat(inp[1].value)||0, boy=parseFloat(inp[2].value)||0, kal=parseTutar(inp[3].value);
+    const aciklama = inp[0].value||'';
+    if(en>0 && boy>0 && kal>0) satirOlculeri.push({en, boy, kal, aciklama});
+  });
+  if(satirOlculeri.length===0){
+    alert('Ahşap satırlarına en az bir ölçü girin!');
+    return;
+  }
+
+  // Her hammadde için hesapla
+  const sonuclar = gecerliHm.map(hm=>{
+    const ahsapMal = satirOlculeri.reduce((t,s)=>t + s.en*s.boy*s.kal*hm.cm3f, 0);
+    const hamMal   = ahsapMal + disMal + iscilik + sabitPay;
+    const platSon  = platformlar.filter(p=>p.komisyon/100 < 1).map(p=>{
+      const koR=p.komisyon/100, kg=p.kargo||0, kdvOrani=p.kdvOrani||0;
+      const payda = kdvOrani>0 ? (1-koR-kdvOrani/(1+kdvOrani)) : (1-koR);
+      const sf    = (hamMal+kg+netKarHdf)/payda;
+      const sfUsd = p.isEtsy ? sf/p.etsy_kur : null;
+      return {name:p.name, emoji:p.emoji, sf, sfUsd};
+    });
+    return {hm, ahsapMal, hamMal, platSon};
+  });
+
+  // En ucuz hammadde hangisi
+  const minMal = Math.min(...sonuclar.map(s=>s.hamMal));
+
+  // HTML oluştur
+  const wrap = document.getElementById('karsWrap');
+  let html = `<div class="kars-title">⚖️ Hammadde Karşılaştırması — <span style="color:var(--muted);font-size:13px;font-weight:400">${escH(urunAdi)}</span></div><div class="kars-grid">`;
+
+  sonuclar.forEach(s=>{
+    const isBest = s.hamMal === minMal;
+    const farkTL = s.hamMal - minMal;
+    html += `
+      <div class="kars-card${isBest?' best':''}">
+        ${isBest?'<div class="kars-best-badge">✓ En Ucuz</div>':''}
+        <div class="kars-hdr">
+          <div class="kars-hm">🪵 ${escH(s.hm.ad)}</div>
+          <div class="kars-sub">${fmt6(s.hm.cm3f)} ₺/cm³ · Ahşap: ${fmt(s.ahsapMal)} ₺${farkTL>0?' <span style="color:var(--a1)">+'+fmt(farkTL)+' ₺</span>':''}</div>
+        </div>
+        <div class="kars-body">
+          <div class="kars-row"><span class="kl">Ham Maliyet</span><span class="kars-maliyet">${fmt(s.hamMal)} ₺</span></div>
+          <div class="kars-plat">
+            ${s.platSon.map(p=>`
+              <div class="kars-plat-row">
+                <span class="kars-plat-name">${p.emoji} ${escH(p.name)}</span>
+                <span class="kars-plat-fiyat">${p.sfUsd ? '$'+p.sfUsd.toFixed(2) : fmt(p.sf)+' ₺'}</span>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  });
+
+  html += '</div>';
+  wrap.innerHTML = html;
+  wrap.style.display = 'block';
+  wrap.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ════════════ HESAPLA ════════════
+function hesapla(){
+  const urunAdi   = document.getElementById('urunAdi').value.trim()||'İsimsiz Ürün';
+  const ahsapMal  = calcAhsap();
+  const disMal    = getDisToplam();
+  const iscilik   = parseTutar(document.getElementById('iscilik').value);
+  const dilimPay  = parseFloat(document.getElementById('dilimPay')?.value)||0;
+  const sabitPay  = parseTutar(document.getElementById('sabitPay').value);
+  const netKarHdf = parseTutar(document.getElementById('netKar').value);
+  const hamMal    = ahsapMal+disMal+iscilik+sabitPay+dilimPay;
+
+  const platformlar = getPlatforms();
+  if(platformlar.length===0){alert('Lütfen en az bir platform ekleyin!');return;}
+
+  let html=`
+    <div class="rbox" style="background:var(--wb);border:1px solid var(--wbr);">
+      <div style="font-family:'Libre Baskerville',serif;font-weight:700;font-size:13px;color:var(--wt);margin-bottom:10px;">📦 Maliyet Dökümü</div>
+      <div class="rrows">
+        <div class="rrow"><span class="rl">🪵 Ahşap Malzeme</span><span>${fmt(ahsapMal)} ₺</span></div>
+        <div class="rrow"><span class="rl">🛍️ Satın Alınan Ürünler</span><span>${fmt(disMal)} ₺</span></div>
+        <div class="rrow"><span class="rl">🔨 İşçilik</span><span>${fmt(iscilik)} ₺</span></div>
+        <div class="rrow"><span class="rl">🏪 Sabit Gider Payı</span><span>${fmt(sabitPay)} ₺</span></div>
+        ${dilimPay>0 ? `<div class="rrow"><span class="rl">🔪 Dilimleme Maliyeti</span><span>${fmt(dilimPay)} ₺</span></div>` : ''}
+        <div class="rrow hl"><span class="rl">Toplam Ham Maliyet</span><span class="rv">${fmt(hamMal)} ₺</span></div>
+        <div class="rrow" style="margin-top:3px;"><span class="rl" style="color:var(--a3)">💚 Hedef Net Kâr</span><span style="color:var(--a3);font-weight:700">${fmt(netKarHdf)} ₺</span></div>
+      </div>
+    </div>`;
+
+  let results=[];
+  platformlar.forEach(p=>{
+    const koR = p.komisyon/100;
+    const kg  = p.kargo||0;
+    const kdvOrani = p.kdvOrani||0;
+    if(koR>=1){
+      html+=`<div class="rbox"><div class="rplat"><span>${p.emoji} ${p.name}</span><span class="badge" style="background:rgba(255,107,107,.15);color:var(--a1)">⚠️ Komisyon %100+</span></div></div>`;
+      return;
+    }
+    // sf üzerinden komisyon + KDV birlikte çözülür
+    // netK = sf - sf*koR - sf*kdv/(1+kdv) - kg - hamMal = hedef
+    // sf = (hamMal + kg + netKarHdf) / (1 - koR - kdvOrani/(1+kdvOrani))
+    const payda  = kdvOrani>0 ? (1 - koR - kdvOrani/(1+kdvOrani)) : (1 - koR);
+    const sf     = (hamMal+kg+netKarHdf) / payda;
+    const kom    = sf*koR;
+    const kdvT   = kdvOrani>0 ? sf*kdvOrani/(1+kdvOrani) : 0;
+    const netK   = sf-kom-kg-hamMal-kdvT;
+    const sfUsd = p.isEtsy ? (sf / p.etsy_kur) : null;
+    results.push({platform:p, satisFiyati:sf, sfUsd, hamMal, kom, kdvT, netK, kg});
+    const usdBadge = sfUsd ? `<span class="usd-badge">$ ${sfUsd.toFixed(2)}</span>` : '';
+    html+=`
+      <div class="rbox">
+        <div class="rplat">
+          <span>${p.emoji} ${p.name}</span>
+          <span class="badge bg">💚 ${fmt(netK)} ₺ kâr</span>
+        </div>
+        <div class="rrows">
+          <div class="rrow"><span class="rl">Ham Maliyet</span><span>${fmt(hamMal)} ₺</span></div>
+          <div class="rrow"><span class="rl">🚚 Kargo</span><span ${kg===0?'style="color:var(--muted)"':''}>${kg>0?fmt(kg)+' ₺':'Girilmedi'}</span></div>
+          <div class="rrow"><span class="rl">Komisyon (%${p.komisyon})</span><span style="color:var(--a1)">− ${fmt(kom)} ₺</span></div>
+          ${kdvOrani>0?`<div class="rrow"><span class="rl">KDV (%${(kdvOrani*100).toFixed(0)})</span><span>${fmt(kdvT)} ₺</span></div>`:''}
+          <div class="rrow"><span class="rl" style="color:var(--a3)">💚 Net Kâr</span><span style="color:var(--a3);font-weight:700">${fmt(netK)} ₺</span></div>
+          <div class="rrow hl"><span class="rl">💡 Önerilen Satış Fiyatı</span><span class="rv" style="display:flex;align-items:center;gap:8px;">${fmt(sf)} ₺ ${usdBadge}</span></div>
+        </div>
+      </div>`;
+  });
+
+  lastResult={urunAdi, hamMal, results, netKarHdf};
+  document.getElementById('sonucIc').innerHTML=html;
+  document.getElementById('sonuclar').style.display='block';
+  document.getElementById('sonuclar').scrollIntoView({behavior:'smooth'});
+  // Düzenleme modunda Güncelle/Farklı Kaydet butonlarını göster
+  if(editingIdx !== null) guncelleButonlariniGoster(true);
+  // Bekleyen kayıt callback'i varsa çalıştır
+  if(typeof _postHesaplaCallback === 'function'){
+    const cb = _postHesaplaCallback;
+    _postHesaplaCallback = null;
+    cb();
+  }
+}
+
+
+// ════════════ ÖZET POPUP ════════════
+
+function getHammaddeOzet(u){
+  const snap = u.snapshot;
+  if(!snap || !snap.ahsaplar || !snap.ahsaplar.length) return null;
+  const isimler = [];
+  snap.ahsaplar.forEach(a=>{
+    if(a.hmIdx !== '' && a.hmIdx !== undefined){
+      const hm = hammaddeler[parseInt(a.hmIdx)];
+      if(hm && hm.ad) isimler.push(hm.ad);
+    } else if(a.aciklama){
+      isimler.push(a.aciklama);
+    }
+  });
+  if(!isimler.length) return null;
+  return [...new Set(isimler)].join(', ');
+}
+function popupAc(idx, card){
+  const u = savedProds[idx];
+  const popup = document.getElementById('urunPopup');
+  document.getElementById('popupAd').textContent = u.ad;
+  document.getElementById('popupTarih').textContent = u.tarih||'';
+  document.getElementById('popupMaliyet').textContent = fmt(u.maliyet||0)+' ₺';
+  document.getElementById('popupNetkar').textContent = fmt(u.netKar||0)+' ₺';
+  // Platformlar
+  const pl = document.getElementById('popupPlatlar');
+  const kurPopup = (u.snapshot && u.snapshot.etsy_kur) ? parseFloat(u.snapshot.etsy_kur) : (parseFloat(localStorage.getItem('fhp_etsy_kur'))||38.5);
+  pl.innerHTML = (u.platforms||[]).map(p=>{
+    const isEtsy = p.name.toLowerCase().includes('etsy');
+
+    const subHtml = isEtsy ? `<div class="up-pf-sub">${fmt(p.fiyat)} ₺</div>` : '';
+    return `<div class="up-plat">
+      <div>
+        <div class="up-pn">${escH(p.name)}</div>
+        <div class="up-net">Net kâr: ${fmt(p.net||0)} ₺</div>
+      </div>
+      <div style="text-align:right">
+        <div class="up-pf">${isEtsy ? '$'+(p.fiyat/kurPopup).toFixed(2) : fmt(p.fiyat)+' ₺'}</div>
+        ${subHtml}
+      </div>
+    </div>`;
+  }).join('');
+  // Hammadde satırı
+  const hmEl   = document.getElementById('popupHammadde');
+  const hmRow  = document.getElementById('popupHmRow');
+  const hmOzet = getHammaddeOzet(u);
+  if(hmEl && hmRow){
+    if(hmOzet){ hmEl.textContent = hmOzet; hmRow.style.display='flex'; }
+    else       { hmRow.style.display='none'; }
+  }
+  // Merkeze yerleştir
+  popup.style.display = 'flex';
+  requestAnimationFrame(()=>{
+    const pw = popup.offsetWidth  || 630;
+    const ph = popup.offsetHeight || 500;
+    popup.style.left = Math.max(8, Math.round((window.innerWidth  - pw) / 2)) + 'px';
+    popup.style.top  = Math.max(8, Math.round((window.innerHeight - ph) / 2) + window.scrollY) + 'px';
+  });
+  // Dışarı tıklayınca kapat
+  document.removeEventListener('click', popupDisTiklama);
+  setTimeout(()=>{ document.addEventListener('click', popupDisTiklama); }, 0);
+  // Sürükle
+  initPopupDrag();
+}
+
+
+// ════════════ POPUP SÜRÜKLE ════════════
+let _pdx=0, _pdy=0, _pdragging=false;
+
+function initPopupDrag(){
+  const hdr = document.getElementById('popupHdr');
+  if(!hdr) return;
+  hdr.removeEventListener('mousedown', _popupDragStart);
+  hdr.addEventListener('mousedown', _popupDragStart);
+}
+
+function _popupDragStart(e){
+  if(e.target.closest('button')) return; // × butonuna tıklanırsa sürükleme
+  _pdragging = true;
+  const popup = document.getElementById('urunPopup');
+  const rect  = popup.getBoundingClientRect();
+  _pdx = e.clientX - rect.left;
+  _pdy = e.clientY - rect.top;
+  popup.style.transition = 'none';
+  document.getElementById('popupHdr').style.cursor = 'grabbing';
+  document.addEventListener('mousemove', _popupDragMove);
+  document.addEventListener('mouseup',   _popupDragEnd);
+  e.preventDefault();
+}
+
+function _popupDragMove(e){
+  if(!_pdragging) return;
+  const popup = document.getElementById('urunPopup');
+  let nx = e.clientX - _pdx;
+  let ny = e.clientY - _pdy;
+  // Ekran sınırları
+  const pw = popup.offsetWidth, ph = popup.offsetHeight;
+  nx = Math.max(0, Math.min(window.innerWidth  - pw, nx));
+  ny = Math.max(0, Math.min(window.innerHeight - ph, ny));
+  popup.style.left = nx + 'px';
+  popup.style.top  = ny + 'px';
+}
+
+function _popupDragEnd(){
+  _pdragging = false;
+  const hdr = document.getElementById('popupHdr');
+  if(hdr) hdr.style.cursor = 'grab';
+  document.removeEventListener('mousemove', _popupDragMove);
+  document.removeEventListener('mouseup',   _popupDragEnd);
+}
+
+function popupKapat(){
+  document.getElementById('urunPopup').style.display='none';
+  document.removeEventListener('click', popupDisTiklama);
+  document.removeEventListener('mousemove', _popupDragMove);
+  document.removeEventListener('mouseup',   _popupDragEnd);
+}
+
+function popupDisTiklama(e){
+  const popup = document.getElementById('urunPopup');
+  if(popup && !popup.contains(e.target)){
+    popupKapat();
+  }
+}
+
+// ════════════ KAYDET / LİSTE ════════════
+function snapshotForm(){
+  // Ahşap satırları
+  const ahsaplar = [];
+  document.querySelectorAll('#ahsapList .ah-row').forEach(row=>{
+    const sel = row.querySelector('select');
+    const inp = row.querySelectorAll('input');
+    ahsaplar.push({
+      hmIdx: sel ? sel.value : '',
+      aciklama: inp[0]?.value||'',
+      en:  inp[1]?.value||'',
+      boy: inp[2]?.value||'',
+      kal: inp[3]?.value||'',
+      cm3f:inp[4]?.value||''
+    });
+  });
+  // Dış ürünler
+  const disler = [];
+  document.querySelectorAll('#disList .gr').forEach(row=>{
+    const inp = row.querySelectorAll('input');
+    disler.push({ad: inp[0]?.value||'', fiyat: inp[1]?.value||''});
+  });
+  // Platformlar
+  const platlar = [];
+  document.querySelectorAll('#platList .plat-row').forEach(row=>{
+    const inp = row.querySelectorAll('input');
+    platlar.push({
+      emoji: row.querySelector('.plat-emoji')?.textContent||'🛒',
+      name: inp[0]?.value||'',
+      komisyon: inp[1]?.value||'',
+      kdv: inp[2]?.value||'20'
+    });
+  });
+  return {
+    ahsaplar, disler, platlar,
+    iscilik:  document.getElementById('iscilik')?.value||'',
+    sabitPay: document.getElementById('sabitPay')?.value||'',
+    dilimPay:   document.getElementById('dilimPay')?.value||'',
+    dilimUcret: document.getElementById('dilimUcret')?.value||'',
+    dilimAdet:  document.getElementById('dilimAdet')?.value||'',
+    netKar:   document.getElementById('netKar')?.value||'',
+    etsy_kur: document.getElementById('etsy_kur')?.value||'38.50'
+  };
+}
+
+function buildUrunObj(){
+  return {
+    id: Date.now(),
+    ad: lastResult.urunAdi,
+    maliyet: lastResult.hamMal,
+    netKar: lastResult.netKarHdf,
+    kdv: lastResult.results.map(r=>(r.platform.kdvOrani*100).toFixed(0)+'%').join('/') || '—',
+    platforms: lastResult.results.map(r=>({name:r.platform.name, fiyat:r.satisFiyati, net:r.netK})),
+    tarih: new Date().toLocaleDateString('tr-TR'),
+    foto: currentFotoB64 || null,
+    snapshot: snapshotForm()
+  };
+}
+
+function kaydet(){
+  if(!lastResult){
+    _postHesaplaCallback = ()=>{
+      savedProds.unshift(buildUrunObj());
+      syncYaz('fhp_urunler', savedProds);
+      editIptal();
+      alert('✅ Ürün kaydedildi!');
+    };
+    hesapla();
+    return;
+  }
+  savedProds.unshift(buildUrunObj());
+  syncYaz('fhp_urunler', savedProds);
+  editIptal();
+  alert('✅ Ürün kaydedildi!');
+}
+
+let _postHesaplaCallback = null;
+
+function guncelle(){
+  if(editingIdx === null) return;
+  // Her zaman önce hesapla — form değişmiş olabilir
+  _postHesaplaCallback = _guncelleSonrasinda;
+  hesapla();
+}
+
+function _guncelleSonrasinda(){
+  if(!lastResult || editingIdx === null) return;
+  const yeni = buildUrunObj();
+  yeni.id = savedProds[editingIdx].id;
+  savedProds[editingIdx] = yeni;
+  syncYaz('fhp_urunler', savedProds);
+  const ad = yeni.ad;
+  editIptal();
+  alert('✅ "' + ad + '" güncellendi!');
+}
+
+function farklıKaydet(){
+  // Her zaman önce hesapla
+  _postHesaplaCallback = _farklıKaydetSonrasinda;
+  hesapla();
+}
+
+function _farklıKaydetSonrasinda(){
+  if(!lastResult) return;
+  savedProds.unshift(buildUrunObj());
+  syncYaz('fhp_urunler', savedProds);
+  editIptal();
+  alert('✅ Farklı ürün olarak kaydedildi!');
+}
+
+function editIptal(){
+  editingIdx = null;
+  guncelleButonlariniGoster(false);
+  const banner = document.getElementById('edit-banner');
+  if(banner) banner.style.display = 'none';
+  fotoYukle(null);
+}
+
+function formTemizle(){
+  // Düzenleme modundaysa iptal et
+  editingIdx = null;
+  guncelleButonlariniGoster(false);
+  const banner = document.getElementById('edit-banner');
+  if(banner) banner.style.display = 'none';
+
+  // Ürün adı
+  const adEl = document.getElementById('urunAdi');
+  if(adEl) adEl.value = '';
+
+  // Fotoğraf
+  fotoYukle(null);
+
+  // Ahşap listesi — temizle, 1 boş satır ekle
+  const ahsapListEl = document.getElementById('ahsapList');
+  if(ahsapListEl){ ahsapListEl.innerHTML = ''; cnt.ah = 0; }
+  addAhsap();
+
+  // Dışarıdan satın alınan — temizle, 1 boş satır ekle
+  const disListEl = document.getElementById('disList');
+  if(disListEl){ disListEl.innerHTML = ''; cnt.dis = 0; }
+  addDis();
+
+  // İşçilik & Maliyetler
+  ['iscilik','sabitPay'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+
+  // Dilimleme
+  const du = document.getElementById('dilimUcret'); if(du) du.value = '';
+  const da = document.getElementById('dilimAdet');  if(da) da.value = '';
+  const dg = document.getElementById('dilimPayGoster'); if(dg) dg.textContent = '—';
+  const dp = document.getElementById('dilimPay'); if(dp) dp.value = '';
+
+  // Net kâr — varsayılana sıfırla
+  const nk = document.getElementById('netKar');
+  if(nk) nk.value = '500';
+
+  // Sonuçlar alanını gizle (innerHTML temizleme — içindeki sonucIc silinir!)
+  const sonuclar = document.getElementById('sonuclar');
+  if(sonuclar) sonuclar.style.display = 'none';
+  const sonucIc = document.getElementById('sonucIc');
+  if(sonucIc) sonucIc.innerHTML = '';
+  lastResult = null;
+
+  // Karşılaştırma alanını gizle
+  const karsWrap = document.getElementById('karsWrap');
+  if(karsWrap) karsWrap.style.display = 'none';
+
+  showToast('✅ Form temizlendi.');
+}
+
+function guncelleButonlariniGoster(duzenlemeModu){
+  const normal  = document.getElementById('kaydet-normal');
+  const duzenle = document.getElementById('kaydet-duzenle');
+  if(!normal || !duzenle) return;
+  if(duzenlemeModu){
+    normal.style.display  = 'none';
+    duzenle.style.display = 'flex';
+  } else {
+    normal.style.display  = 'flex';
+    duzenle.style.display = 'none';
+  }
+}
+
+
+// ════════════ ÜRÜN ÇIKTI (PDF / JPEG) ════════════
+function urunCikti(idx){
+  const u = savedProds[idx];
+  const kur = (u.snapshot && u.snapshot.etsy_kur) ? parseFloat(u.snapshot.etsy_kur) : 38.5;
+
+  const platRows = (u.platforms||[]).map(p=>{
+    const isEtsy = p.name.toLowerCase().includes('etsy');
+    const fiyatStr = isEtsy
+      ? `$${(p.fiyat/kur).toFixed(2)} <span style="font-size:12px;color:#888">(${fmt(p.fiyat)} ₺)</span>`
+      : `${fmt(p.fiyat)} ₺`;
+    return `<tr>
+      <td style="padding:10px 14px;border-bottom:1px solid #e8e8e8;color:#555;">${escH(p.name)}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e8e8e8;text-align:right;font-weight:700;font-size:16px;">${fiyatStr}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #e8e8e8;text-align:right;color:#27ae60;">+${fmt(p.net||0)} ₺</td>
+    </tr>`;
+  }).join('');
+
+  const fotoHtml = u.foto
+    ? `<img src="${u.foto}" style="width:160px;height:160px;object-fit:cover;border-radius:12px;border:1px solid #e0e0e0;">`
+    : `<div style="width:160px;height:160px;border-radius:12px;border:2px dashed #ddd;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:36px;">📷</div>`;
+
+  const html = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>${escH(u.ad)} — Fiyat Kartı</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:#f5f5f5;padding:30px;}
+  .page{background:#fff;max-width:620px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);}
+  .hdr{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:24px 28px;display:flex;gap:20px;align-items:flex-start;}
+  .hdr-text h1{font-family:'Libre Baskerville',serif;font-size:22px;color:#fff;margin-bottom:6px;}
+  .hdr-text .tarih{font-size:12px;color:rgba(255,255,255,.5);}
+  .body{padding:24px 28px;}
+  .maliyet-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .mbox{flex:1;min-width:130px;background:#f8f8f8;border-radius:10px;padding:14px 16px;}
+  .mbox .ml{font-size:11px;color:#888;margin-bottom:4px;}
+  .mbox .mv{font-family:'Libre Baskerville',serif;font-size:18px;font-weight:800;color:#1a1a2e;}
+  .mbox.green .mv{color:#27ae60;}
+  table{width:100%;border-collapse:collapse;margin-top:4px;}
+  th{background:#f0f0f0;padding:10px 14px;text-align:left;font-size:11px;color:#888;font-weight:600;letter-spacing:.5px;}
+  th:last-child,td:last-child{text-align:right;}
+  .footer{padding:16px 28px;border-top:1px solid #eee;font-size:11px;color:#bbb;text-align:center;}
+  .print-btn{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}
+  .print-btn button{padding:10px 24px;border-radius:8px;border:none;cursor:pointer;font-size:14px;font-weight:600;}
+  .btn-pdf{background:#2c3e7a;color:#fff;}
+  .btn-jpeg{background:#27ae60;color:#fff;}
+  @media print{.print-btn{display:none;}body{background:#fff;padding:0;} .page{box-shadow:none;border-radius:0;}}
+</style>
+</head>
+<body>
+<div class="print-btn">
+  <button class="btn-pdf" onclick="window.print()">🖨️ PDF Olarak Kaydet</button>
+  <button class="btn-jpeg" onclick="saveJpeg()">📸 JPEG Olarak Kaydet</button>
+</div>
+<div class="page" id="printPage">
+  <div class="hdr">
+    ${fotoHtml}
+    <div class="hdr-text" style="flex:1;">
+      <h1>${escH(u.ad)}</h1>
+      <div class="tarih">📅 ${u.tarih||''}</div>
+    </div>
+  </div>
+  <div class="body">
+    ${(()=>{ const hm=getHammaddeOzet(u); return hm ? '<div style=\'background:#f0eaff;border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:13px;\'><span style=\'color:#7c4dff;font-weight:700;\'>🪵 Hammadde: </span><span style=\'color:#333;\'>'+hm+'</span></div>' : ''; })()}
+    <div class="maliyet-row">
+      <div class="mbox"><div class="ml">Ham Maliyet</div><div class="mv">${fmt(u.maliyet)} ₺</div></div>
+      <div class="mbox green"><div class="ml">Hedef Net Kâr</div><div class="mv">${fmt(u.netKar||0)} ₺</div></div>
+    </div>
+    <table>
+      <thead><tr><th>Platform</th><th style="text-align:right">Satış Fiyatı</th><th style="text-align:right">Net Kâr</th></tr></thead>
+      <tbody>${platRows}</tbody>
+    </table>
+  </div>
+  <div class="footer">FiyatHesap Pro — ${new Date().toLocaleDateString('tr-TR')}</div>
+</div>
+<script>
+function saveJpeg(){
+  // html2canvas ile JPEG kaydet
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  s.onload = ()=>{
+    html2canvas(document.getElementById('printPage'),{scale:2,useCORS:true}).then(canvas=>{
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/jpeg',0.95);
+      a.download = '${escH(u.ad).replace(/[^a-zA-Z0-9ğüşıöçĞÜŞİÖÇ ]/g,'_')}_fiyat.jpg';
+      a.click();
+    });
+  };
+  document.head.appendChild(s);
+}
+<\/script>
+</body></html>`;
+
+  const win = window.open('','_blank');
+  win.document.write(html);
+  win.document.close();
+}
+function renderSaved(){
+  const div=document.getElementById('savedList');
+  if(savedProds.length===0){
+    div.innerHTML='<div class="empty"><div class="eb">📦</div><p>Henüz kayıtlı ürün yok.</p></div>';
+    return;
+  }
+  div.innerHTML='<div class="slist"></div>';
+  const list = div.querySelector('.slist');
+  savedProds.forEach((u, idx) => {
+    const fs = u.platforms.map(p=>p.fiyat);
+    const mn = Math.min(...fs), mx = Math.max(...fs);
+    const el = document.createElement('div');
+    el.className = 'si'; el.style.cursor='pointer';
+    el.dataset.idx = idx;
+    el.innerHTML = `
+      ${u.foto ? `<img class="si-foto" src="${u.foto}" alt="ürün">` : ''}
+      <div style="flex:1;min-width:0;">
+        <div class="sin" id="sinad_${idx}">${escH(u.ad)}</div>
+        <div class="sim">
+          ${(()=>{ const hm=getHammaddeOzet(u); return hm ? '<span style="color:var(--a5);font-weight:600;">🪵 '+escH(hm)+'</span><br>' : ''; })()}Maliyet: ${fmt(u.maliyet)} ₺ &nbsp;|&nbsp; Hedef Kâr: ${fmt(u.netKar||0)} ₺<br>
+          ${u.platforms.map(p=>{
+            const isEtsy = p.name.toLowerCase().includes('etsy');
+            const kur = (u.snapshot && u.snapshot.etsy_kur) ? parseFloat(u.snapshot.etsy_kur) : (parseFloat(localStorage.getItem('fhp_etsy_kur'))||38.5);
+            const fiyatStr = isEtsy
+              ? '<strong>$'+( p.fiyat/kur).toFixed(2)+'</strong> <span style=\'font-size:11px;color:var(--muted)\'>(' +fmt(p.fiyat)+'₺)</span>'
+              : '<strong>'+fmt(p.fiyat)+' ₺</strong>';
+            return escH(p.name)+': '+fiyatStr;
+          }).join(' &nbsp;|&nbsp; ')}<br>
+          <span style="font-size:11px;color:var(--muted)">${u.tarih}</span>
+        </div>
+      </div>
+      <div class="sip" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+        <div class="ss">${mn===mx?fmt(mn):fmt(mn)+' – '+fmt(mx)} ₺</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+          <button class="btn pdf-btn" data-pdf="${idx}" style="padding:5px 11px;font-size:12px;">⬇️ Çıktı</button>
+          <button class="btn" style="background:rgba(255,217,61,.1);color:var(--a2);border:1px solid rgba(255,217,61,.25);padding:5px 11px;font-size:12px;" data-edit="${idx}">✏️ Düzenle</button>
+          <button class="btn bdel" data-del="${idx}">🗑 Sil</button>
+        </div>
+      </div>`;
+    list.appendChild(el);
+  });
+
+  // Event delegation
+  list.addEventListener('click', function(e){
+    const delBtn  = e.target.closest('[data-del]');
+    const editBtn = e.target.closest('[data-edit]');
+    const siCard  = e.target.closest('.si');
+    const pdfBtn  = e.target.closest('[data-pdf]');
+    if(delBtn){
+      const idx = parseInt(delBtn.dataset.del);
+      silUrun(idx);
+    } else if(editBtn){
+      const idx = parseInt(editBtn.dataset.edit);
+      duzenleUrun(idx);
+    } else if(pdfBtn){
+      const idx = parseInt(pdfBtn.dataset.pdf);
+      urunCikti(idx);
+    } else if(siCard && !e.target.closest('button')){
+      const idx = parseInt(siCard.dataset.idx);
+      popupAc(idx, siCard);
+    }
+  });
+}
+
+function escH(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function silUrun(idx){
+  if(!confirm('Bu ürünü silmek istediğinizden emin misiniz?')) return;
+  savedProds.splice(idx, 1);
+  syncYaz('fhp_urunler', savedProds);
+  renderSaved();
+}
+
+function duzenleUrun(idx){
+  editingIdx = idx; // Düzenleme modunu işaretle
+  const u = savedProds[idx];
+  const snap = u.snapshot;
+
+  // 0. Önce sekmeye geç (DOM hazır olsun)
+  const hesaplaBtn = document.querySelector('.tb');
+  sw('hesapla', hesaplaBtn);
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  // 1. Ürün adı
+  const urunAdiEl = document.getElementById('urunAdi');
+  if(urunAdiEl) urunAdiEl.value = u.ad;
+
+  if(snap){
+    // 2. Ahşap satırlarını temizle ve yeniden doldur
+    document.getElementById('ahsapList').innerHTML = ''; cnt.ah = 0;
+    const ahsaplar = snap.ahsaplar && snap.ahsaplar.length ? snap.ahsaplar : [{}];
+    ahsaplar.forEach(a => {
+      addAhsap();
+      const rows = document.querySelectorAll('#ahsapList .ah-row');
+      const row = rows[rows.length-1];
+      const sel = row.querySelector('select');
+      const inp = row.querySelectorAll('input');
+      if(sel && a.hmIdx !== undefined) { sel.value = a.hmIdx; ahsapHammaddeSecildi(row.id); }
+      if(inp[0]) inp[0].value = a.aciklama||'';
+      if(inp[1]) inp[1].value = a.en||'';
+      if(inp[2]) inp[2].value = a.boy||'';
+      if(inp[3]) inp[3].value = a.kal||'';
+      if(inp[4] && a.cm3f) { inp[4].value = a.cm3f; }
+      calcAhsapRow(row.id);
+    });
+
+    // 3. Dış ürünleri temizle ve doldur
+    document.getElementById('disList').innerHTML = ''; cnt.dis = 0;
+    const disler = snap.disler && snap.disler.length ? snap.disler : [{}];
+    disler.forEach(d => {
+      addDis();
+      const rows = document.querySelectorAll('#disList .gr');
+      const row = rows[rows.length-1];
+      const inp = row.querySelectorAll('input');
+      if(inp[0]) inp[0].value = d.ad||'';
+      if(inp[1]) inp[1].value = d.fiyat||'';
+    });
+
+    // 4. İşçilik, sabit pay, net kâr
+    const iscilikEl = document.getElementById('iscilik');
+    if(iscilikEl) iscilikEl.value = snap.iscilik||'';
+    const sabitPayEl = document.getElementById('sabitPay');
+    if(sabitPayEl) sabitPayEl.value = snap.sabitPay||'';
+    const dilimUcretEl = document.getElementById('dilimUcret');
+    const dilimAdetEl  = document.getElementById('dilimAdet');
+    if(dilimUcretEl) dilimUcretEl.value = snap.dilimUcret||'';
+    if(dilimAdetEl)  dilimAdetEl.value  = snap.dilimAdet||'';
+    calcDilimPay(); // hidden dilimPay + gösterge güncelle
+    const netKarEl = document.getElementById('netKar');
+    if(netKarEl) netKarEl.value = snap.netKar||'';
+
+    // 5. Etsy kuru
+    const kurEl = document.getElementById('etsy_kur');
+    if(kurEl && snap.etsy_kur) kurEl.value = snap.etsy_kur;
+
+    // 6. Platformları doldur
+    if(snap.platlar && snap.platlar.length){
+      document.getElementById('platList').innerHTML = ''; cnt.plat = 0;
+      snap.platlar.forEach(p => addPlat(p.emoji||'🛒', p.name, p.komisyon, p.kdv||'20', p.kargo||'0'));
+      savePlatData();
+    }
+  } else {
+    // Snapshot yok (eski kayıt) — sadece net kâr ve maliyet koy
+    const netKarEl = document.getElementById('netKar');
+    if(netKarEl) netKarEl.value = u.netKar||'';
+  }
+
+  // 7. Fotoğraf yükle
+  fotoYukle(u.foto||null);
+
+  // 8. Bildirim banner'ı göster
+  setTimeout(()=>{
+    const banner = document.getElementById('edit-banner');
+    if(banner){
+      banner.style.display='flex';
+      const adEl = document.getElementById('edit-banner-ad');
+      if(adEl) adEl.textContent = u.ad;
+    }
+    guncelleButonlariniGoster(true);
+  }, 50);
+}
+
+
+init();
+</script>
+</body>
+</html>
