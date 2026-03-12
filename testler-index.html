@@ -260,6 +260,15 @@ function pinDel() {
   document.getElementById('pin-error').textContent = '';
 }
 
+document.addEventListener('keydown', function(e) {
+  if(document.getElementById('pin-screen').style.display === 'none') return;
+  if(e.key >= '0' && e.key <= '9') {
+    pinPress(e.key);
+  } else if(e.key === 'Backspace') {
+    pinDel();
+  }
+});
+
 function openApp(file) {
   const frame = document.getElementById('app-frame');
   frame.src = file;
