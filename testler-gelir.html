@@ -66,6 +66,15 @@ header{
 }
 .filter-bar .btn-reset:hover{color:var(--text);border-color:var(--border2);}
 
+/* ALT SEKMELER */
+.sub-tabs{display:flex;gap:6px;margin:18px 0 14px;justify-content:center;flex-wrap:wrap;}
+.stb{font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;}
+.stb:hover{color:var(--text);border-color:var(--muted);}
+.stb.active{background:var(--surface);color:var(--text);border-color:var(--a2, #fbbf24);box-shadow:0 0 0 1px rgba(251,191,36,.2);}
+.ay-chip{font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;}
+.ay-chip:hover{color:var(--text);}
+.ay-chip.active{background:rgba(251,191,36,.12);color:var(--text);border-color:rgba(251,191,36,.4);}
+
 /* sekmeler */
 .tabs{display:flex;gap:4px;margin-top:12px;justify-content:center;}
 .tb{
@@ -169,7 +178,7 @@ header{
 }
 .entry:hover{border-color:var(--border2);}
 .entry.income-row{grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;}
-.entry.expense-row{grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;}
+.entry.expense-row{grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;background:rgba(248,113,113,.04);border-color:rgba(248,113,113,.12);}
 .entry-name{font-weight:500;font-size:13px;}
 .entry-name small{display:block;font-size:11px;color:var(--muted);margin-top:2px;}
 .entry-val{font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;}
@@ -177,8 +186,8 @@ header{
 .entry-val.red{color:var(--expense);}
 .entry-val.muted{color:var(--muted);font-weight:500;font-size:13px;}
 .entry-date{font-size:11px;color:var(--muted);}
-.kdv-red-badge{background:rgba(248,113,113,.15);color:var(--kdv-red);border:1px solid rgba(248,113,113,.35);border-radius:5px;font-size:10px;font-weight:700;padding:2px 7px;display:inline-block;}
-.kdv-green-badge{background:rgba(74,222,128,.15);color:var(--kdv-green);border:1px solid rgba(74,222,128,.35);border-radius:5px;font-size:10px;font-weight:700;padding:2px 7px;display:inline-block;}
+.kdv-red-badge{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.35);border-radius:8px;font-size:12px;font-weight:800;padding:4px 10px;display:inline-block;}
+.kdv-green-badge{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.35);border-radius:8px;font-size:12px;font-weight:800;padding:4px 10px;display:inline-block;}
   .badge-kdv{
   display:inline-block;background:rgba(76,201,240,.1);color:var(--blue);
   border:1px solid rgba(76,201,240,.2);border-radius:5px;
@@ -189,18 +198,45 @@ header{
 .empty-state p{font-size:13px;}
 
 /* ── AYLIK ÖZET TABLOSU (arşiv) ── */
-.month-table{width:100%;border-collapse:collapse;font-size:13px;}
-.month-table th{
-  font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
-  color:var(--muted);text-align:left;padding:8px 12px;
+.month-table{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:13px;}
+.month-table thead th{
+  padding:6px 16px;font-size:10px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--muted);text-align:left;
+}
+.month-table tbody tr td{
+  padding:14px 16px;
+  background:var(--surface);
+  border-top:1px solid var(--border);
   border-bottom:1px solid var(--border);
 }
-.month-table td{padding:11px 12px;border-bottom:1px solid var(--border);}
-.month-table tr:last-child td{border-bottom:none;}
-.month-table tr:hover td{background:rgba(255,255,255,.02);}
-.month-table .mn{font-family:'Nunito',sans-serif;font-weight:600;}
-.month-table .pos{color:var(--income);font-family:'Nunito',sans-serif;font-weight:700;}
-.month-table .neg{color:var(--expense);font-family:'Nunito',sans-serif;font-weight:700;}
+.month-table tbody tr td:first-child{
+  border-left:1px solid var(--border);
+  border-radius:12px 0 0 12px;
+  border-left:3px solid rgba(251,191,36,.3);
+}
+.month-table tbody tr td:last-child{
+  border-right:1px solid var(--border);
+  border-radius:0 12px 12px 0;
+}
+.month-table tbody tr:hover td{background:rgba(255,255,255,.04);}
+.month-table tfoot tr td{
+  padding:14px 16px;
+  background:rgba(251,191,36,.06);
+  border-top:2px solid rgba(251,191,36,.3);
+  border-bottom:1px solid rgba(251,191,36,.2);
+  font-weight:800;
+}
+.month-table tfoot tr td:first-child{
+  border-left:3px solid rgba(251,191,36,.5);
+  border-radius:12px 0 0 12px;
+}
+.month-table tfoot tr td:last-child{
+  border-right:1px solid rgba(251,191,36,.2);
+  border-radius:0 12px 12px 0;
+}
+.month-table .mn{font-family:'Libre Baskerville',serif;font-weight:700;font-size:13px;color:var(--text);}
+.month-table .pos{color:#4ade80;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;}
+.month-table .neg{color:#f87171;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;}
 .month-table .neu{color:var(--muted);}
 .month-table .clickable{cursor:pointer;}
 .month-table .clickable:hover .mn{color:var(--purple);text-decoration:underline;}
@@ -325,6 +361,16 @@ header{
 <div id="tab-ozet" class="tab active">
   <div id="ozet-period-title" class="period-title" style="display:none;width:100%;text-align:center;justify-content:center;align-items:center;margin-left:auto;margin-right:auto;"></div>
   <div class="summary-grid" id="summaryCards"></div>
+  <!-- Alt sekmeler -->
+  <div class="sub-tabs" id="subTabs">
+    <button class="stb active" onclick="swSub('genel',this)">📋 Genel Tablo</button>
+    <button class="stb" onclick="swSub('yillik',this)">📊 Yıllık Tablo</button>
+    <button class="stb" onclick="swSub('aylik',this)">📅 Aylık Tablo</button>
+  </div>
+  <!-- Aylık çoktan seçmeli ay seçici (sadece aylık tabda görünür) -->
+  <div id="aySecici" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:16px;justify-content:center;">
+    <span style="font-size:12px;color:var(--muted);align-self:center;margin-right:4px;">Ay seçin:</span>
+  </div>
   <div id="ozet-icerik"></div>
 </div>
 
@@ -511,6 +557,127 @@ function yillariGuncelle(){
 // ══════════════════════════════════════════
 // SEKME GEÇİŞİ
 // ══════════════════════════════════════════
+
+function swSub(tab, el){
+  window._subTab = tab;
+  document.querySelectorAll('.stb').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  // Aylık seçici göster/gizle
+  const aySecici = document.getElementById('aySecici');
+  if(tab === 'aylik'){
+    renderAyChips();
+    aySecici.style.display = 'flex';
+  } else {
+    aySecici.style.display = 'none';
+  }
+  renderOzet();
+}
+
+function renderAyChips(){
+  const aySecici = document.getElementById('aySecici');
+  const secili = window._seciliAylar || new Set();
+  let html = '<span style="font-size:12px;color:var(--muted);align-self:center;margin-right:4px;">Ay seçin:</span>';
+  for(let i=1;i<=12;i++){
+    const ak = secili.has(i) ? 'active' : '';
+    html += `<button class="ay-chip ${ak}" onclick="toggleAy(${i})">${AYLAR[i]}</button>`;
+  }
+  aySecici.innerHTML = html;
+}
+
+function toggleAy(ay){
+  if(!window._seciliAylar) window._seciliAylar = new Set();
+  if(window._seciliAylar.has(ay)) window._seciliAylar.delete(ay);
+  else window._seciliAylar.add(ay);
+  renderAyChips();
+  renderOzet();
+}
+
+function renderGenelTablo(){
+  // Tüm kayıtlar — yıl bazında gelir/gider/net özeti
+  const yillar = new Set();
+  [...gelirler,...giderler].forEach(e=>yillar.add(tarihParse(e.tarih).yil));
+  if(!yillar.size) return '';
+  const siralı = [...yillar].sort((a,b)=>b-a);
+
+  let rows = siralı.map(y=>{
+    const gY = gelirler.filter(e=>tarihParse(e.tarih).yil===y).reduce((s,e)=>s+e.dahil,0);
+    const dY = giderler.filter(e=>tarihParse(e.tarih).yil===y).reduce((s,e)=>s+e.dahil,0);
+    const gelirKdv = gelirler.filter(e=>tarihParse(e.tarih).yil===y).reduce((s,e)=>s+e.kdvT,0);
+    const giderKdv = giderler.filter(e=>tarihParse(e.tarih).yil===y).reduce((s,e)=>s+e.kdvT,0);
+    const kdvOdenecek = gelirKdv - giderKdv;
+    const netG = gY - dY - (kdvOdenecek > 0 ? kdvOdenecek : 0);
+    const netClass = netG>=0?'pos':'neg';
+    return `<tr>
+      <td><span class="mn">${y}</span></td>
+      <td><span class="pos">${fmt(gY)} ₺</span></td>
+      <td><span class="neg">${fmt(dY)} ₺</span></td>
+      <td><span class="${netClass}">${netG>=0?'+':''}${fmt(netG)} ₺</span></td>
+    </tr>`;
+  }).join('');
+
+  // Genel toplam satırı
+  const topG = gelirler.reduce((s,e)=>s+e.dahil,0);
+  const topD = giderler.reduce((s,e)=>s+e.dahil,0);
+  const topKdvG = gelirler.reduce((s,e)=>s+e.kdvT,0);
+  const topKdvD = giderler.reduce((s,e)=>s+e.kdvT,0);
+  const topKdv = topKdvG - topKdvD;
+  const topNet = topG - topD - (topKdv>0?topKdv:0);
+  const topClass = topNet>=0?'pos':'neg';
+
+  return `<div class="card" style="margin-top:18px;">
+    <div class="ctitle"><div class="ico ig">📋</div>Genel Tablo</div>
+    <table class="month-table">
+      <thead><tr><th>Yıl</th><th>Toplam Gelir</th><th>Toplam Gider</th><th>Net Kâr</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr style="border-top:2px solid var(--border);font-weight:700;">
+        <td><span class="mn">TOPLAM</span></td>
+        <td><span class="pos">${fmt(topG)} ₺</span></td>
+        <td><span class="neg">${fmt(topD)} ₺</span></td>
+        <td><span class="${topClass}">${topNet>=0?'+':''}${fmt(topNet)} ₺</span></td>
+      </tr></tfoot>
+    </table>
+  </div>`;
+}
+
+function renderAylikSecimli(){
+  const secili = window._seciliAylar || new Set();
+  if(!secili.size){
+    return `<div class="card" style="margin-top:18px;"><div class="empty-state"><div class="es-icon">📅</div><p>Yukarıdan görüntülemek istediğiniz ayları seçin.</p></div></div>`;
+  }
+
+  const yillar = new Set();
+  [...gelirler,...giderler].forEach(e=>yillar.add(tarihParse(e.tarih).yil));
+  const siralıYillar = [...yillar].sort((a,b)=>b-a);
+  const siralıAylar = [...secili].sort((a,b)=>a-b);
+
+  let rows = '';
+  siralıYillar.forEach(y=>{
+    siralıAylar.forEach(ay=>{
+      const gA = gelirler.filter(e=>{const p=tarihParse(e.tarih);return p.yil===y&&p.ay===ay;}).reduce((s,e)=>s+e.dahil,0);
+      const dA = giderler.filter(e=>{const p=tarihParse(e.tarih);return p.yil===y&&p.ay===ay;}).reduce((s,e)=>s+e.dahil,0);
+      if(gA===0&&dA===0) return;
+      const net = gA - dA;
+      const netClass = net>=0?'pos':'neg';
+      rows += `<tr>
+        <td><span class="mn">${AYLAR[ay]} ${y}</span></td>
+        <td><span class="pos">${fmt(gA)} ₺</span></td>
+        <td><span class="neg">${fmt(dA)} ₺</span></td>
+        <td><span class="${netClass}">${net>=0?'+':''}${fmt(net)} ₺</span></td>
+      </tr>`;
+    });
+  });
+
+  if(!rows) return `<div class="card" style="margin-top:18px;"><div class="empty-state"><div class="es-icon">📅</div><p>Seçili aylarda kayıt bulunamadı.</p></div></div>`;
+
+  return `<div class="card" style="margin-top:18px;">
+    <div class="ctitle"><div class="ico ig">📅</div>Aylık Tablo — ${siralıAylar.map(a=>AYLAR[a]).join(', ')}</div>
+    <table class="month-table">
+      <thead><tr><th>Dönem</th><th>Toplam Gelir</th><th>Toplam Gider</th><th>Net Kâr</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
 function sw(tab, el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tb').forEach(t=>t.classList.remove('active'));
@@ -638,7 +805,7 @@ function renderGiderList(){
       <div class="entry-name">${escH(e.ad)} ${e.kdvOrani>0?`<span class="badge-kdv">%${e.kdvOrani} KDV</span>`:''}</div>
       <div class="entry-date">${tarihStr(e.tarih)}</div>
       <div class="entry-val red">${fmt(e.hariç)} ₺</div>
-      <div class="entry-val muted">${e.kdvT>0?fmt(e.kdvT)+' ₺':'—'}</div>
+      <div class="entry-val red" style="opacity:.7">${e.kdvT>0?fmt(e.kdvT)+' ₺':'—'}</div>
       <div class="entry-val red">${fmt(e.dahil)} ₺</div>
       <div style="display:flex;gap:5px;">
         <button class="btn-edit" onclick="modalAc('gider',${e.id})">✏️</button>
@@ -715,14 +882,15 @@ function renderOzet(){
       <div class="scard-sub" style="${oz.kdvOdenmesi>0?'color:var(--kdv-red)':oz.kdvOdenmesi<0?'color:var(--kdv-green)':''}">${oz.kdvOdenmesi>0?'🔴 Ödenecek KDV':oz.kdvOdenmesi<0?'🟢 İade Alınacak KDV':'⚪ KDV Dengede'}</div>
     </div>`;
 
-  // İçerik: aylık grafik (filtre yoksa) veya tablo
+  // İçerik: aktif sub-tab'a göre
   const icerik = document.getElementById('ozet-icerik');
-  if(!f.yil && !f.ay){
+  const subAktif = window._subTab || 'genel';
+  if(subAktif === 'genel'){
+    icerik.innerHTML = renderGenelTablo() + renderKdvOzet(oz);
+  } else if(subAktif === 'yillik'){
     icerik.innerHTML = renderYillikGrafik() + renderKdvOzet(oz);
-  } else if(f.yil && !f.ay){
-    icerik.innerHTML = renderAylikGrafik(f.yil) + renderKdvOzet(oz);
   } else {
-    icerik.innerHTML = renderKayitOzeti(gL, gD) + renderKdvOzet(oz);
+    icerik.innerHTML = renderAylikSecimli() + renderKdvOzet(oz);
   }
 }
 
