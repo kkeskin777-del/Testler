@@ -28,7 +28,8 @@
   .logo small{font-weight:400;font-size:11px;display:block;-webkit-text-fill-color:var(--muted);color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
 
   .tab-nav{display:flex;gap:5px;background:var(--surface);padding:5px;border-radius:14px;border:1px solid var(--border);flex-wrap:wrap;}
-  .tb{font-family:'Nunito',sans-serif;padding:8px 14px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-weight:500;transition:all .25s;white-space:nowrap;}
+  .tb{font-family:'Nunito',sans-serif;padding:8px 14px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;font-weight:500;transition:all .25s;white-space:nowrap;}
+  .tb.tb-urunler{font-size:17px;font-weight:600;}
   .tb:hover{color:var(--text);background:var(--surface2);}
   .tb.active{background:var(--grad);color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(167,139,250,.25);}
   .tab{display:none;}.tab.active{display:block;}
@@ -276,7 +277,7 @@
       <button class="tb active" onclick="sw('hesapla',this)">🧮 Hesapla</button>
       <button class="tb"        onclick="sw('hammadde',this)">🪵 Hammadde</button>
       <button class="tb"        onclick="sw('sabit',this)">⚙️ Genel Giderler</button>
-      <button class="tb"        onclick="sw('urunler',this)">📦 Ürünlerim</button>
+      <button class="tb tb-urunler" onclick="sw('urunler',this)">📦 Ürünlerim</button>
     </div>
   </div>
 </header>
@@ -496,10 +497,6 @@
     <div class="up-row">
       <span class="up-lbl">Ham Maliyet</span>
       <span class="up-val" id="popupMaliyet"></span>
-    </div>
-    <div class="up-row">
-      <span class="up-lbl">Hedef Net Kâr</span>
-      <span class="up-val green" id="popupNetkar"></span>
     </div>
     <div class="up-sec">Satış Fiyatları</div>
     <div class="up-plat-list" id="popupPlatlar"></div>
@@ -915,7 +912,7 @@ function recalcSavedProds(){
       const kom   = sf*koR;
       const kdvT  = kdvOrani>0 ? sf*kdvOrani/(1+kdvOrani) : 0;
       const netK  = sf-kom-kg-hamMal-kdvT;
-      return {name:p.name, fiyat:sf, net:netK};
+      return {name:p.name, fiyat:sf, net:netK, netKarPlat:netKar};
     });
   });
   if(changed){
@@ -1359,7 +1356,7 @@ function popupAc(idx, card){
   document.getElementById('popupAd').textContent = u.ad;
   document.getElementById('popupTarih').textContent = u.tarih||'';
   document.getElementById('popupMaliyet').textContent = fmt(u.maliyet||0)+' ₺';
-  document.getElementById('popupNetkar').textContent = fmt(u.netKar||0)+' ₺';
+  // netKar artık platform bazlı — platform listesinde gösteriliyor
   // Platformlar
   const pl = document.getElementById('popupPlatlar');
   const kurPopup = (u.snapshot && u.snapshot.etsy_kur) ? parseFloat(u.snapshot.etsy_kur) : (parseFloat(localStorage.getItem('fhp_etsy_kur'))||38.5);
@@ -1370,7 +1367,7 @@ function popupAc(idx, card){
     return `<div class="up-plat">
       <div>
         <div class="up-pn">${escH(p.name)}</div>
-        <div class="up-net">Net kâr: ${fmt(p.net||0)} ₺</div>
+        <div class="up-net">💚 Net Kâr: ${fmt(p.net||0)} ₺</div>
       </div>
       <div style="text-align:right">
         <div class="up-pf">${isEtsy ? '$'+(p.fiyat/kurPopup).toFixed(2) : fmt(p.fiyat)+' ₺'}</div>
@@ -1513,7 +1510,7 @@ function buildUrunObj(){
     ad: lastResult.urunAdi,
     maliyet: lastResult.hamMal,
     kdv: lastResult.results.map(r=>(r.platform.kdvOrani*100).toFixed(0)+'%').join('/') || '—',
-    platforms: lastResult.results.map(r=>({name:r.platform.name, fiyat:r.satisFiyati, net:r.netK})),
+    platforms: lastResult.results.map(r=>({name:r.platform.name, fiyat:r.satisFiyati, net:r.netK, netKarPlat:r.platform.netKarPlat||0})),
     tarih: new Date().toLocaleDateString('tr-TR'),
     foto: currentFotoB64 || null,
     snapshot: snapshotForm()
@@ -1711,7 +1708,7 @@ function urunCikti(idx){
     ${(()=>{ const hm=getHammaddeOzet(u); return hm ? '<div style=\'background:#f0eaff;border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:13px;\'><span style=\'color:#7c4dff;font-weight:700;\'>🪵 Hammadde: </span><span style=\'color:#333;\'>'+hm+'</span></div>' : ''; })()}
     <div class="maliyet-row">
       <div class="mbox"><div class="ml">Ham Maliyet</div><div class="mv">${fmt(u.maliyet)} ₺</div></div>
-      <div class="mbox green"><div class="ml">Hedef Net Kâr</div><div class="mv">${fmt(u.netKar||0)} ₺</div></div>
+      <div class="mbox green"><div class="ml">Net Kâr</div><div class="mv" style="font-size:11px;line-height:1.8">${(u.platforms||[]).map(p=>'<span style="display:block">'+escH(p.name)+': '+fmt(p.net||0)+' ₺</span>').join('')}</div></div>
     </div>
     <table>
       <thead><tr><th>Platform</th><th style="text-align:right">Satış Fiyatı</th><th style="text-align:right">Net Kâr</th></tr></thead>
@@ -1761,7 +1758,7 @@ function renderSaved(){
       <div style="flex:1;min-width:0;">
         <div class="sin" id="sinad_${idx}">${escH(u.ad)}</div>
         <div class="sim">
-          ${(()=>{ const hm=getHammaddeOzet(u); return hm ? '<span style="color:var(--a5);font-weight:600;">🪵 '+escH(hm)+'</span><br>' : ''; })()}Maliyet: ${fmt(u.maliyet)} ₺ &nbsp;|&nbsp; Hedef Kâr: ${fmt(u.netKar||0)} ₺<br>
+          ${(()=>{ const hm=getHammaddeOzet(u); return hm ? '<span style="color:var(--a5);font-weight:600;">🪵 '+escH(hm)+'</span><br>' : ''; })()}Maliyet: ${fmt(u.maliyet)} ₺<br>
           ${u.platforms.map(p=>{
             const isEtsy = p.name.toLowerCase().includes('etsy');
             const kur = (u.snapshot && u.snapshot.etsy_kur) ? parseFloat(u.snapshot.etsy_kur) : (parseFloat(localStorage.getItem('fhp_etsy_kur'))||38.5);
